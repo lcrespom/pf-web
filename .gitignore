@@ -1,0 +1,7 @@
+node_modules/
+js/
+web/vendor/
+web/bundle.js*
+npm-debug.log
+.DS_Store
+.vscode/

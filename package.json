@@ -1,0 +1,30 @@
+{
+  "name": "pf-web",
+  "version": "1.0.0",
+  "description": "Experimenting with a simple pure functional + virtual DOM web app",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run serve",
+    "build": "browserify -d src/main.ts -p [ tsify ] | exorcist web/bundle.js.map > web/bundle.js",
+    "watch": "chokidar \"src/**/*.ts\" -c \"npm run build && echo ----- Build done -----\"",
+    "serve": "cd web && live-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lcrespom/pf-web.git"
+  },
+  "author": "Luis Crespo",
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "*",
+    "chokidar-cli": "*",
+    "exorcist": "*",
+    "live-server": "*",
+    "tsify": "*",
+    "tslint": "*",
+    "typescript": "*"
+  },
+  "dependencies": {
+    "snabbdom": "^0.6.1"
+  }
+}
