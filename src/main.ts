@@ -1,14 +1,9 @@
 declare var require: any;
 
-import snabbdom from 'snabbdom/snabbdom.bundle';
-const h = snabbdom.h;
+import vdom from 'snabbdom/snabbdom.bundle';
+const { h, patch: render } = vdom;
 
-let vnode;
 let model = {};
-
-function render() {
-	vnode = snabbdom.patch(vnode, view(model));
-}
 
 function doClick(evt) {
 	console.log('click', this, arguments);
@@ -21,12 +16,12 @@ function view(mdl) {
 				style: { background: 'cyan' },
 				on: { click: [doClick, 1, 2] }
 			},
-			'Hello from snabbdom app')
+			'Hello from vdom app')
 	]);
 }
 
 document.addEventListener('DOMContentLoaded', _ => {
 	let container = document.getElementById('app');
-	vnode = snabbdom.patch(container, view(model));
-	render();
+	let vnode = render(container, view(model));
+	// next time: vnode = render(vnode, view(model));
 });
