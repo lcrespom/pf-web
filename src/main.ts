@@ -10,10 +10,18 @@ function render() {
 	vnode = snabbdom.patch(vnode, view(model));
 }
 
+function doClick(evt) {
+	console.log('click', this, arguments);
+}
+
 function view(mdl) {
 	return h('div', [
 		h('h1', 'Hello'),
-		'Hello from snabbdom app'
+		h('p#pid.cls1.cls2', {
+				style: { background: 'cyan' },
+				on: { click: [doClick, 1, 2] }
+			},
+			'Hello from snabbdom app')
 	]);
 }
 
