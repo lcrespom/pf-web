@@ -1,6 +1,7 @@
 import vdom from 'snabbdom/snabbdom.bundle';
 const { h, patch: render } = vdom;
 
+
 // -------------------- Framework --------------------
 
 interface Action {
@@ -13,7 +14,6 @@ type Dispatcher = (action: Action) => void;
 type Renderer<M> = (model: M, dispatch: Dispatcher) => any;
 
 function runApp<M>(model: M, domNode: HTMLElement, update: Updater<M>, view: Renderer<M>) {
-
 	let vnode = domNode;
 	let dispatch = (action: Action) => {
 		model = update(model, action);
