@@ -22,30 +22,37 @@ function runApp<M>(model: M, domNode: HTMLElement, update: Updater<M>, view: Ren
 	vnode = render(vnode, view(model, dispatch));
 }
 
+
+// -------------------- Application --------------------
+
+function view(model: number, dispatch: Dispatcher) {
+	return h('div', [
+		h('h1', 'Counter'),
+		h('button', {
+				on: { click: _ => dispatch({ type: 'DECREMENT' }) }
+			},
+			' - '
+		),
+		h('span', ' ' + model + ' '),
+		h('button', {
+				on: { click: _ => dispatch({ type: 'INCREMENT' }) }
+			},
+			' + '
+		)
+	]);
+}
+
+function update(model: number, action: Action): number {
+	switch (action.type) {
+		case 'INCREMENT': return model + 1;
+		case 'DECREMENT': return model - 1;
+	}
+	return model;
+}
+
 document.addEventListener('DOMContentLoaded', _ => {
 	let container = document.getElementById('app');
 	if (!container)
 		throw Error('No "#app" element');
-	runApp(null, container, update, view);
+	runApp(0, container, update, view);
 });
-
-
-// -------------------- Application --------------------
-
-function doClick(evt) {
-	console.log('click', this, arguments);
-}
-
-function view(model) {
-	return h('div', [
-		h('h1', 'Hello'),
-		h('p#pid.cls1.cls2', {
-				style: { background: 'yellow' },
-				on: { click: [doClick, 1, 2] }
-			},
-			'Hello from vdom app')
-	]);
-}
-
-function update(model, action: Action) {
-}
