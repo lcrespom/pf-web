@@ -1,5 +1,6 @@
 import vdom from 'snabbdom/snabbdom.bundle';
 const { h, patch: render } = vdom;
+declare var R;
 
 
 // -------------------- Framework --------------------
@@ -74,20 +75,24 @@ function view(model: ToDoModel, dispatch: ToDoDispatcher) {
 	]);
 }
 
-// ToDo: do not mutate the model
 function update(model: ToDoModel, action: ToDoAction): ToDoModel {
+	let newModel = R.merge(model);
 	switch (action.type) {
 		case 'input':
-			model.input = action.text || '';
-			return model;
+			return newModel({ input: action.text });
 		case 'add':
-			model.items.push({ text: action.text || '', completed: false });
-			model.input = '';
-			return model;
+			let newItem = { text: action.text || '', completed: false };
+			return newModel({
+				input: '',
+				items: model.items.concat(newItem)
+			});
 		case 'toggle':
-			if (action.item)
-				action.item.completed = !action.item.completed;
-			return model;
+			return newModel({
+				items: model.items.map(item =>
+					item == action.item ?
+					R.merge(item, { completed: !item.completed })
+					: item)
+			});
 		default: return model;
 	}
 }
