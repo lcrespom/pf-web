@@ -25,34 +25,58 @@ function runApp<M>(model: M, domNode: HTMLElement, update: Updater<M>, view: Ren
 
 // -------------------- Application --------------------
 
-function view(model: number, dispatch: Dispatcher) {
+interface ToDoItem {
+	text: string;
+	completed: boolean;
+}
+
+interface ToDoModel {
+	items: ToDoItem[];
+	filter: 'All' | 'Pending' | 'Done';
+}
+
+
+function viewAddToDo(model: ToDoModel, dispatch: Dispatcher) {
+	let toDoText = '';
 	return h('div', [
-		h('h1', 'Counter'),
+		h('input', {
+			on: { input: evt => toDoText = evt.target.value }
+		}),
+		' ',
 		h('button', {
-				on: { click: _ => dispatch({ type: 'DECREMENT' }) }
-			},
-			' - '
-		),
-		h('span', ' ' + model + ' '),
-		h('button', {
-				on: { click: _ => dispatch({ type: 'INCREMENT' }) }
-			},
-			' + '
-		)
+			on: { click: _ => dispatch({ type: 'ADD', text: toDoText }) }
+		}, 'Add')
 	]);
 }
 
-function update(model: number, action: Action): number {
+function viewListItems(model: ToDoModel, dispatch: Dispatcher) {
+	return h('ul', model.items.map(item =>
+		h('li', item.text)
+	));
+}
+
+function view(model: ToDoModel, dispatch: Dispatcher) {
+	return h('div', [
+		h('h1', 'ToDo'),
+		viewAddToDo(model, dispatch),
+		viewListItems(model, dispatch)
+	]);
+}
+
+// ToDo: make Action type generic/inferred
+function update(model: ToDoModel, action): ToDoModel {
 	switch (action.type) {
-		case 'INCREMENT': return model + 1;
-		case 'DECREMENT': return model - 1;
+		case 'ADD':
+			model.items.push({ text: action.text, completed: false });
+			return model;
+		default: return model;
 	}
-	return model;
 }
 
 document.addEventListener('DOMContentLoaded', _ => {
 	let container = document.getElementById('app');
 	if (!container)
 		throw Error('No "#app" element');
-	runApp(0, container, update, view);
+	let model: ToDoModel = { items: [], filter: 'All' };
+	runApp(model, container, update, view);
 });
