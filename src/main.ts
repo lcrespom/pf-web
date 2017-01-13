@@ -4,18 +4,14 @@ const { h, patch: render } = vdom;
 
 // -------------------- Framework --------------------
 
-interface Action {
-	type: string;
-	[others: string]: any;
-}
+type Updater<M, A> = (model: M, action: A) => M;
+type Dispatcher<A> = (action: A) => void;
+type Renderer<M, A> = (model: M, dispatch: Dispatcher<A>) => any;
 
-type Updater<M> = (model: M, action: Action) => M;
-type Dispatcher = (action: Action) => void;
-type Renderer<M> = (model: M, dispatch: Dispatcher) => any;
-
-function runApp<M>(model: M, domNode: HTMLElement, update: Updater<M>, view: Renderer<M>) {
+function runApp<M, A>(model: M, domNode: HTMLElement,
+	update: Updater<M, A>, view: Renderer<M, A>) {
 	let vnode = domNode;
-	let dispatch = (action: Action) => {
+	let dispatch = (action: A) => {
 		model = update(model, action);
 		vnode = render(vnode, view(model, dispatch));
 	};
@@ -24,6 +20,12 @@ function runApp<M>(model: M, domNode: HTMLElement, update: Updater<M>, view: Ren
 
 
 // -------------------- Application --------------------
+
+interface ToDoAction {
+	type: string;
+	text?: string;
+	item?: ToDoItem;
+}
 
 interface ToDoItem {
 	text: string;
@@ -36,7 +38,7 @@ interface ToDoModel {
 }
 
 
-function viewAddToDo(model: ToDoModel, dispatch: Dispatcher) {
+function viewAddToDo(model: ToDoModel, dispatch: Dispatcher<ToDoAction>) {
 	let toDoText = '';
 	return h('div', [
 		h('input', {
@@ -44,18 +46,24 @@ function viewAddToDo(model: ToDoModel, dispatch: Dispatcher) {
 		}),
 		' ',
 		h('button', {
-			on: { click: _ => dispatch({ type: 'ADD', text: toDoText }) }
+			on: { click: _ => dispatch({ type: 'add', text: toDoText }) }
 		}, 'Add')
 	]);
 }
 
-function viewListItems(model: ToDoModel, dispatch: Dispatcher) {
+function viewListItems(model: ToDoModel, dispatch: Dispatcher<ToDoAction>) {
 	return h('ul', model.items.map(item =>
-		h('li', item.text)
+		h('li', {
+			on: { click: _ => dispatch({ type: 'toggle', item })},
+			style: {
+				textDecoration: item.completed ? 'line-through' : '',
+				cursor: 'pointer'
+			}
+		}, item.text)
 	));
 }
 
-function view(model: ToDoModel, dispatch: Dispatcher) {
+function view(model: ToDoModel, dispatch: Dispatcher<ToDoAction>) {
 	return h('div', [
 		h('h1', 'ToDo'),
 		viewAddToDo(model, dispatch),
@@ -63,11 +71,15 @@ function view(model: ToDoModel, dispatch: Dispatcher) {
 	]);
 }
 
-// ToDo: make Action type generic/inferred
-function update(model: ToDoModel, action): ToDoModel {
+// ToDo: do not mutate the model
+function update(model: ToDoModel, action: ToDoAction): ToDoModel {
 	switch (action.type) {
-		case 'ADD':
-			model.items.push({ text: action.text, completed: false });
+		case 'add':
+			model.items.push({ text: action.text || '', completed: false });
+			return model;
+		case 'toggle':
+			if (action.item)
+				action.item.completed = !action.item.completed;
 			return model;
 		default: return model;
 	}
