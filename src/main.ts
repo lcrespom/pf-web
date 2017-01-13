@@ -33,26 +33,29 @@ interface ToDoItem {
 }
 
 interface ToDoModel {
+	input: string;
 	items: ToDoItem[];
 	filter: 'All' | 'Pending' | 'Done';
 }
 
+type ToDoDispatcher = Dispatcher<ToDoAction>;
 
-function viewAddToDo(model: ToDoModel, dispatch: Dispatcher<ToDoAction>) {
-	let toDoText = '';
+
+function viewAddToDo(model: ToDoModel, dispatch: ToDoDispatcher) {
 	return h('div', [
 		h('input', {
-			on: { input: evt => toDoText = evt.target.value }
+			on: { input: evt => dispatch({ type: 'input', text: evt.target.value }) },
+			props: { value: model.input }
 		}),
 		' ',
 		h('button', {
-			on: { click: _ => dispatch({ type: 'add', text: toDoText }) }
+			on: { click: _ => dispatch({ type: 'add', text: model.input }) }
 		}, 'Add')
 	]);
 }
 
-function viewListItems(model: ToDoModel, dispatch: Dispatcher<ToDoAction>) {
-	return h('ul', model.items.map(item =>
+function viewListItems(items: ToDoItem[], dispatch: ToDoDispatcher) {
+	return h('ul', items.map(item =>
 		h('li', {
 			on: { click: _ => dispatch({ type: 'toggle', item })},
 			style: {
@@ -63,19 +66,23 @@ function viewListItems(model: ToDoModel, dispatch: Dispatcher<ToDoAction>) {
 	));
 }
 
-function view(model: ToDoModel, dispatch: Dispatcher<ToDoAction>) {
+function view(model: ToDoModel, dispatch: ToDoDispatcher) {
 	return h('div', [
 		h('h1', 'ToDo'),
 		viewAddToDo(model, dispatch),
-		viewListItems(model, dispatch)
+		viewListItems(model.items, dispatch)
 	]);
 }
 
 // ToDo: do not mutate the model
 function update(model: ToDoModel, action: ToDoAction): ToDoModel {
 	switch (action.type) {
+		case 'input':
+			model.input = action.text || '';
+			return model;
 		case 'add':
 			model.items.push({ text: action.text || '', completed: false });
+			model.input = '';
 			return model;
 		case 'toggle':
 			if (action.item)
@@ -89,6 +96,6 @@ document.addEventListener('DOMContentLoaded', _ => {
 	let container = document.getElementById('app');
 	if (!container)
 		throw Error('No "#app" element');
-	let model: ToDoModel = { items: [], filter: 'All' };
+	let model: ToDoModel = { input: '', items: [], filter: 'All' };
 	runApp(model, container, update, view);
 });
