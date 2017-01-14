@@ -27,6 +27,7 @@ interface ToDoAction {
 	type: string;
 	text?: string;
 	item?: ToDoItem;
+	filter?: string;
 }
 
 interface ToDoItem {
@@ -68,32 +69,70 @@ function viewListItems(items: ToDoItem[], dispatch: ToDoDispatcher) {
 	));
 }
 
+function viewFilter(filter, dispatch) {
+
+	function link(txt, active) {
+		if (!active) return txt;
+		return H.a({
+			attrs: { href: '#' + txt },
+			on: { click: _ => dispatch({ type: 'filter', filter: txt }) }
+		}, txt);
+	}
+
+	return H.p([
+		H.b('Filter: '),
+		link('All', filter != 'All'),
+		' | ',
+		link('Pending', filter != 'Pending'),
+		' | ',
+		link('Done', filter != 'Done')
+	]);
+}
+
+function filterItems(items, filter) {
+	switch (filter) {
+		case 'All':
+			return items;
+		case 'Pending':
+			return items.filter(i => !i.completed);
+		case 'Done':
+			return items.filter(i => i.completed);
+	}
+}
+
 function view(model: ToDoModel, dispatch: ToDoDispatcher) {
 	return H.div([
 		H.h1('ToDo'),
 		viewAddToDo(model, dispatch),
-		viewListItems(model.items, dispatch)
+		viewListItems(filterItems(model.items, model.filter), dispatch),
+		viewFilter(model.filter, dispatch)
 	]);
 }
 
 function update(model: ToDoModel, action: ToDoAction): ToDoModel {
+	let newItem;
 	let newModel = R.merge(model);
+	let replaceInList = (list, oldElem, newElem) =>
+		list.map(item => item === oldElem ? newElem : item);
 	switch (action.type) {
 		case 'input':
-			return newModel({ input: action.text });
+			return newModel({
+				input: action.text
+			});
 		case 'add':
-			let newItem = { text: action.text || '', completed: false };
+			newItem = { text: action.text || '', completed: false };
 			return newModel({
 				input: '',
 				items: model.items.concat(newItem)
 			});
 		case 'toggle':
+			let completed = action.item ? !action.item.completed : true;
+			newItem = R.merge(action.item, { completed });
 			return newModel({
-				items: model.items.map(item =>
-					item == action.item ?
-						R.merge(item, { completed: !item.completed })
-						: item)
+				items: replaceInList(model.items, action.item, newItem)
 			});
+		case 'filter':
+			return newModel({ filter: action.filter });
 		default: return model;
 	}
 }
