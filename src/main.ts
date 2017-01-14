@@ -1,5 +1,6 @@
 import vdom from 'snabbdom/snabbdom.bundle';
-const { h, patch: render } = vdom;
+import H from './tag-helpers';
+const render = vdom.patch;
 declare var R;
 
 
@@ -43,22 +44,22 @@ type ToDoDispatcher = Dispatcher<ToDoAction>;
 
 
 function viewAddToDo(model: ToDoModel, dispatch: ToDoDispatcher) {
-	return h('div', [
-		h('input', {
+	return H.div([
+		H.input({
 			on: { input: evt => dispatch({ type: 'input', text: evt.target.value }) },
 			props: { value: model.input }
 		}),
 		' ',
-		h('button', {
+		H.button({
 			on: { click: _ => dispatch({ type: 'add', text: model.input }) }
 		}, 'Add')
 	]);
 }
 
 function viewListItems(items: ToDoItem[], dispatch: ToDoDispatcher) {
-	return h('ul', items.map(item =>
-		h('li', {
-			on: { click: _ => dispatch({ type: 'toggle', item })},
+	return H.ul(items.map(item =>
+		H.li({
+			on: { click: _ => dispatch({ type: 'toggle', item }) },
 			style: {
 				textDecoration: item.completed ? 'line-through' : '',
 				cursor: 'pointer'
@@ -68,8 +69,8 @@ function viewListItems(items: ToDoItem[], dispatch: ToDoDispatcher) {
 }
 
 function view(model: ToDoModel, dispatch: ToDoDispatcher) {
-	return h('div', [
-		h('h1', 'ToDo'),
+	return H.div([
+		H.h1('ToDo'),
 		viewAddToDo(model, dispatch),
 		viewListItems(model.items, dispatch)
 	]);
@@ -90,8 +91,8 @@ function update(model: ToDoModel, action: ToDoAction): ToDoModel {
 			return newModel({
 				items: model.items.map(item =>
 					item == action.item ?
-					R.merge(item, { completed: !item.completed })
-					: item)
+						R.merge(item, { completed: !item.completed })
+						: item)
 			});
 		default: return model;
 	}
