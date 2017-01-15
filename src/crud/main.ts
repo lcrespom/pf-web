@@ -66,7 +66,7 @@ function fetchContacts(): Promise<Contact[]> {
 document.addEventListener('DOMContentLoaded', _ => {
 	let container = document.getElementById('crud-app');
 	if (!container)
-		throw Error('No "#app" element');
+		throw Error('No "#crud-app" element');
 	let model: CrudModel = { contacts: [] };
 	let dispatch = runComponent(update, view, model, container, true);
 	fetchContacts()
