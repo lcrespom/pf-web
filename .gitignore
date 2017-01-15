@@ -1,7 +1,7 @@
 node_modules/
 js/
 web/vendor/
-web/bundle.js*
+web/*.js*
 npm-debug.log
 .DS_Store
 .vscode/
