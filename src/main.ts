@@ -23,11 +23,26 @@ function runApp<M, A>(model: M, domNode: HTMLElement,
 
 // -------------------- Application --------------------
 
-interface ToDoAction {
-	type: string;
-	text?: string;
-	item?: ToDoItem;
-	filter?: string;
+type ToDoAction = InputAction | AddAction | ToggleAction | FilterAction;
+
+interface InputAction {
+	type: 'input';
+	text: string;
+}
+
+interface AddAction {
+	type: 'add';
+	text: string;
+}
+
+interface ToggleAction {
+	type: 'toggle';
+	item: ToDoItem;
+}
+
+interface FilterAction {
+	type: 'filter';
+	filter: string;
 }
 
 interface ToDoItem {
@@ -120,13 +135,13 @@ function update(model: ToDoModel, action: ToDoAction): ToDoModel {
 				input: action.text
 			});
 		case 'add':
-			newItem = { text: action.text || '', completed: false };
+			newItem = { text: action.text, completed: false };
 			return newModel({
 				input: '',
 				items: model.items.concat(newItem)
 			});
 		case 'toggle':
-			let completed = action.item ? !action.item.completed : true;
+			let completed = !action.item.completed;
 			newItem = R.merge(action.item, { completed });
 			return newModel({
 				items: replaceInList(model.items, action.item, newItem)
