@@ -8,7 +8,7 @@ export type Renderer<M, A> = (model: M, dispatch: Dispatcher<M, A>) => any;
 
 export function runComponent<M, A>(
 	update: Updater<M, A>, view: Renderer<M, A>,
-	model: M, domNode: HTMLElement, debugMode: boolean = false) {
+	model: M, domNode: HTMLElement, debugMode: boolean = false): Dispatcher<M, A> {
 	let vnode = domNode;
 	let dispatch = (action: A, newModel?: M) => {
 		model = newModel || update(model, action);
@@ -18,6 +18,7 @@ export function runComponent<M, A>(
 	};
 	vnode = render(vnode, view(model, dispatch));
 	if (debugMode) prepareDebug(model, dispatch);
+	return dispatch;
 }
 
 function prepareDebug<M, A>(initialModel: M, dispatch: Dispatcher<M, A>) {

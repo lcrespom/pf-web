@@ -9,8 +9,8 @@ This architecture style is described
 - How to import ramda type definitions without bundling it?
 	- Ask in SO => wait for answer
 	- Open issue in @types/ramda => wait for answer
-- Next app: customers CRUD
-	- Table with list of customers
-	- Form for editing a customer
+- Next app: contacts CRUD
+	- Table with list of contacts
+	- Form for editing a contact
 	- Routes!
 	- REST service dummy with promises

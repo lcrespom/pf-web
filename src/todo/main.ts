@@ -5,7 +5,7 @@ import { ToDoModel } from './types';
 
 
 document.addEventListener('DOMContentLoaded', _ => {
-	let container = document.getElementById('app');
+	let container = document.getElementById('todo-app');
 	if (!container)
 		throw Error('No "#app" element');
 	let model: ToDoModel = { input: '', items: [], filter: 'All' };
