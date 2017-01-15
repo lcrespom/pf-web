@@ -1,27 +1,7 @@
-import vdom from 'snabbdom/snabbdom.bundle';
+import { runComponent, Dispatcher } from './yocto';
 import H from './tag-helpers';
-const render = vdom.patch;
 declare var R;
 
-
-// -------------------- Framework --------------------
-
-type Updater<M, A> = (model: M, action: A) => M;
-type Dispatcher<A> = (action: A) => void;
-type Renderer<M, A> = (model: M, dispatch: Dispatcher<A>) => any;
-
-function runApp<M, A>(model: M, domNode: HTMLElement,
-	update: Updater<M, A>, view: Renderer<M, A>) {
-	let vnode = domNode;
-	let dispatch = (action: A) => {
-		model = update(model, action);
-		vnode = render(vnode, view(model, dispatch));
-	};
-	vnode = render(vnode, view(model, dispatch));
-}
-
-
-// -------------------- Application --------------------
 
 type ToDoAction = InputAction | AddAction | ToggleAction | FilterAction;
 
@@ -56,14 +36,15 @@ interface ToDoModel {
 	filter: 'All' | 'Pending' | 'Done';
 }
 
-type ToDoDispatcher = Dispatcher<ToDoAction>;
+type ToDoDispatcher = Dispatcher<ToDoModel, ToDoAction>;
 
 
 function viewAddToDo(model: ToDoModel, dispatch: ToDoDispatcher) {
 	return H.div([
 		H.input({
 			on: { input: evt => dispatch({ type: 'input', text: evt.target.value }) },
-			props: { value: model.input }
+			props: { value: model.input },
+			attrs: { autofocus: true }
 		}),
 		' ',
 		H.button({
@@ -124,6 +105,7 @@ function view(model: ToDoModel, dispatch: ToDoDispatcher) {
 	]);
 }
 
+
 function update(model: ToDoModel, action: ToDoAction): ToDoModel {
 	let newItem;
 	let newModel = R.merge(model);
@@ -157,5 +139,5 @@ document.addEventListener('DOMContentLoaded', _ => {
 	if (!container)
 		throw Error('No "#app" element');
 	let model: ToDoModel = { input: '', items: [], filter: 'All' };
-	runApp(model, container, update, view);
+	runComponent(update, view, model, container, true);
 });
