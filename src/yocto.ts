@@ -46,7 +46,7 @@ class YoctoDebugger<M, A> {
 
 	forward(steps = 1) {
 		if (this.pos + steps >= this.models.length)
-			throw Error('At final state');
+			throw Error('Beyond final state');
 		this.pos += steps;
 		this.dispatch({} as A, this.models[this.pos]);
 	}
