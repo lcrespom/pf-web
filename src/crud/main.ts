@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', _ => {
 	if (!container)
 		throw Error('No "#crud-app" element');
 	let model: CrudModel = { contacts: [] };
-	let dispatch = runComponent(update, view, model, container, true);
+	let dispatch = runComponent(update, view, model, container);
 	fetchContacts()
 	.then(contacts => dispatch({ type: 'contacts', contacts }));
 });
