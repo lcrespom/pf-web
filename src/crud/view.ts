@@ -54,7 +54,7 @@ function viewContactForm(model: Contact, dispatch: CrudDispatcher) {
 	});
 	return H.div([
 		H.form('.form-horizontal', {
-			attrs: { action: '#' },
+			attrs: { action: 'javascript:void(0)' },
 			on: { submit: _ => dispatch({ type: 'submit-contact' }) } }, [
 			H.div(CONTACT_FIELDS_LABELS.map(([field, label]) =>
 				viewFormInput(model, field, label, updateContact))),
