@@ -1,5 +1,5 @@
 import { runComponent } from '../yocto';
-import { CrudModel } from './types';
+import { CrudModel, emptyContact } from './types';
 import { view } from './view';
 import { update } from './update';
 import { fetchContacts } from './service';
@@ -9,10 +9,7 @@ function initModel(): CrudModel {
 	return {
 		contacts: [],
 		mode: 'table',
-		contact: {
-			name: '', surname: '', company: '',
-			mobile: '', phone: '', email: ''
-		}
+		contact: emptyContact()
 	};
 }
 

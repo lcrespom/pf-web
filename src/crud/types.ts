@@ -40,3 +40,10 @@ export interface CrudModel {
 }
 
 export type CrudDispatcher = Dispatcher<CrudModel, CrudAction>;
+
+export function emptyContact(): Contact {
+	return {
+		name: '', surname: '', company: '',
+		mobile: '', phone: '', email: ''
+	};
+}

@@ -1,4 +1,4 @@
-import { CrudModel, CrudAction } from './types';
+import { CrudModel, CrudAction, emptyContact } from './types';
 declare var R;
 
 
@@ -14,6 +14,7 @@ export function update(model: CrudModel, action: CrudAction): CrudModel {
 		case 'submit-contact':
 			return newModel({
 				contacts: R.append(model.contact, model.contacts),
+				contact: emptyContact(),
 				mode: 'table'
 			});
 		default:
