@@ -5,6 +5,7 @@ declare var R;
 
 const CONTACT_FIELDS = ['name', 'surname', 'company', 'mobile', 'phone', 'email'];
 const CONTACT_LABELS = ['Name', 'Surname', 'Company', 'Mobile', 'Phone', 'e-mail'];
+const CONTACT_FIELDS_LABELS = R.zip(CONTACT_FIELDS, CONTACT_LABELS);
 
 
 function viewCrudTable(items: any[], fields: string[], labels: string[]) {
@@ -27,11 +28,14 @@ function viewContacts(model: CrudModel, dispatch: CrudDispatcher) {
 	]);
 }
 
-function viewFormInput(label: string) {
+function viewFormInput(model: any, field: string, label: string, changed) {
 	return H.div('.form-group', [
 		H.label('.control-label.col-sm-3', label),
 		H.div('.col-sm-9',
-			H.input('.form-control')
+			H.input('.form-control', {
+				attrs: { value: model[field] },
+				on: { change: evt => changed(field, evt.target.value) }
+			})
 		)
 	]);
 }
@@ -44,14 +48,24 @@ function viewFormButtons(buttons: any[]) {
 }
 
 function viewContactForm(model: Contact, dispatch: CrudDispatcher) {
+	const updateContact = (field, value) => dispatch({
+		type: 'update-contact',
+		contact: R.merge(model, { [field]: value })
+	});
 	return H.div([
-		H.form('.form-horizontal',
-			CONTACT_LABELS.map(label => viewFormInput(label))),
-		viewFormButtons([
-			H.button('.btn.btn-primary', 'Save contact'),
-			H.button('.btn.btn-default', {
-				on: { click: _ => dispatch({ type: 'mode', mode: 'table' })}
-			}, 'Cancel')
+		H.form('.form-horizontal', {
+			attrs: { action: '#' },
+			on: { submit: _ => dispatch({ type: 'submit-contact' }) } }, [
+			H.div(CONTACT_FIELDS_LABELS.map(([field, label]) =>
+				viewFormInput(model, field, label, updateContact))),
+			viewFormButtons([
+				H.button('.btn.btn-primary',
+					{ attrs: { type: 'submit' } },
+					'Save contact'),
+				H.button('.btn.btn-default', {
+					on: { click: _ => dispatch({ type: 'mode', mode: 'table' })}
+				}, 'Cancel')
+			])
 		])
 	]);
 }

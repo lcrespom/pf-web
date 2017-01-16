@@ -1,7 +1,8 @@
 import { Dispatcher } from '../yocto';
 
 
-export type CrudAction = SetContactsAction | SetModeAction;
+export type CrudAction = SetContactsAction | SetModeAction |
+	UpdateContactAction | SubmitContactAction;
 
 interface SetContactsAction {
 	type: 'contacts';
@@ -10,7 +11,16 @@ interface SetContactsAction {
 
 interface SetModeAction {
 	type: 'mode';
-	mode: string;
+	mode: 'new' | 'table';
+}
+
+interface UpdateContactAction {
+	type: 'update-contact';
+	contact: Contact;
+}
+
+interface SubmitContactAction {
+	type: 'submit-contact';
 }
 
 
