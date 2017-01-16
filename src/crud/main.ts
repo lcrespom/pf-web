@@ -26,8 +26,21 @@ type CrudDispatcher = Dispatcher<CrudModel, CrudAction>;
 
 
 function viewContacts(model: CrudModel, dispatch: CrudDispatcher) {
-	return H.div(model.contacts.map(c =>
-		H.div(`Name: ${c.name}, Surname: ${c.surname}`)));
+	return H.table({
+		attrs: { class: 'table table-hover'} }, [
+		H.thead(
+			H.tr([
+				H.th('Name'), H.th('Surname'), H.th('Company'),
+				H.th('Mobile'), H.th('Phone'), H.th('e-mail')
+			])
+		),
+		H.tbody(model.contacts.map(c =>
+			H.tr([
+				H.td(c.name), H.td(c.surname), H.td(c.company),
+				H.td(c.mobile), H.td(c.phone), H.td(c.email)
+			])
+		))
+	]);
 }
 
 function view(model: CrudModel, dispatch: CrudDispatcher) {
