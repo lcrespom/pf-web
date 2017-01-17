@@ -1,5 +1,5 @@
 import vdom from 'snabbdom/snabbdom.bundle';
-const render = vdom.patch;
+const { patch: render, h } = vdom;
 let global = window as any;
 
 export type Dispatcher<M, A> = (action: A, newModel?: M) => void;
@@ -21,11 +21,46 @@ export function runComponent<M, A>(
 	return dispatch;
 }
 
+
+// -------------------- Component support --------------------
+
+export interface Component<M, A> {
+	init: (data: any) => M;
+	view: (model: M, dispatch: Dispatcher<M, A>) => any;
+	update: (model: M, action: A) => M;
+}
+
+export type ParentDispatch = (evt: any) => any;
+
+export interface ComponentInit {
+	tag?: string;
+	data?: any;
+	onAction?: ParentDispatch;
+}
+
+function plugComponent<M, A>(cmp: Component<M, A>,
+	elm: HTMLElement, data: any, onAction: ParentDispatch) {
+	let child = document.createElement('div');
+	elm.appendChild(child);
+	runComponent(cmp.update, cmp.view, cmp.init(data), child);
+}
+
+export function hComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit = {}) {
+	let { tag = 'div', data = {}, onAction = () => {} } = compInit;
+	return h(tag, {
+		hook: {
+			create: (e, vnode) => plugComponent(cmp, vnode.elm, data, onAction)
+		}
+	});
+}
+
+
+// -------------------- Debug support  --------------------
+
 function prepareDebug<M, A>(initialModel: M, dispatch: Dispatcher<M, A>) {
 	global.yocto = new YoctoDebugger<M, A>(dispatch);
 	global.yocto.push(initialModel);
 }
-
 
 class YoctoDebugger<M, A> {
 	models: M[] = [];
