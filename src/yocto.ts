@@ -6,8 +6,8 @@ let global = window as any;
 // -------------------- Application entry point --------------------
 
 export type Dispatcher<M, A> = (action: A, newModel?: M) => void;
-export type ModelInit<M> = (data?: any) => M;
-export type Updater<M, A> = (model: M, action: A, parentDispatch?: ParentDispatch) => M;
+export type ModelInit<M> = (props?: any) => M;
+export type Updater<M, A> = (model: M, action: A, onEvent?: ParentDispatch) => M;
 export type Renderer<M, A> = (model: M, dispatch: Dispatcher<M, A>) => any;
 export type ParentDispatch = (evt: any) => any;
 
@@ -19,8 +19,8 @@ export interface Component<M, A> {
 
 export interface ComponentInit {
 	tag?: string;
-	data?: any;
-	parentDispatch?: ParentDispatch;
+	props?: any;
+	onEvent?: ParentDispatch;
 	debug?: string;
 }
 
@@ -29,10 +29,10 @@ export function runComponent<M, A>(component: Component<M, A>,
 	domNode: HTMLElement, compInit: ComponentInit = {}): Dispatcher<M, A> {
 	let vnode = domNode;
 	let { update, view } = component;
-	let  { parentDispatch = () => {}, debug = null, data = {} } = compInit;
-	let model = component.init(data);
+	let  { onEvent = () => {}, debug = null, props = {} } = compInit;
+	let model = component.init(props);
 	let dispatch = (action: A, newModel?: M) => {
-		model = newModel || update(model, action, parentDispatch);
+		model = newModel || update(model, action, onEvent);
 		if (debug && !newModel)
 			global.yocto.debug[debug].push(model);
 		vnode = render(vnode, view(model, dispatch));
@@ -46,7 +46,7 @@ export function runComponent<M, A>(component: Component<M, A>,
 
 // -------------------- Nested component support --------------------
 
-export function hComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit = {}) {
+function vdomComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit = {}) {
 	let { tag = 'div' } = compInit;
 	return h(tag, {
 		hook: {
@@ -57,6 +57,12 @@ export function hComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit =
 			}
 		}
 	});
+}
+
+export function makeComponent<M, A>(component: Component<M, A>) {
+	return function useComponent<M, A>(compInit: ComponentInit) {
+		return vdomComponent(component, compInit);
+	};
 }
 
 

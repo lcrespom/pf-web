@@ -1,4 +1,4 @@
-import { runComponent, Dispatcher, hComponent } from '../yocto';
+import { runComponent, Dispatcher } from '../yocto';
 import H from '../tag-helpers';
 import { CountButtonComponent } from './count-button';
 
@@ -14,7 +14,7 @@ type FractalAction = { text: string };
 export type FractalDispatcher = Dispatcher<FractalModel, FractalAction>;
 
 function view(model: FractalModel, dispatch: FractalDispatcher) {
-	const parentDispatch = num => dispatch({ text: '' + num });
+	const onEvent = num => dispatch({ text: '' + num });
 	return H.div([
 		H.h1('Fractal'),
 		H.input({
@@ -22,14 +22,12 @@ function view(model: FractalModel, dispatch: FractalDispatcher) {
 		}),
 		H.br(), H.br(),
 		H.div([
-			hComponent(CountButtonComponent, {
-				tag: 'span', parentDispatch }),
+			CountButtonComponent({ tag: 'span', onEvent }),
 			' ',
-			hComponent(CountButtonComponent, {
-				tag: 'span', data: { eventEvery: 2 }, parentDispatch }),
+			CountButtonComponent({ tag: 'span',
+				props: { eventEvery: 2 }, onEvent }),
 			' ',
-			hComponent(CountButtonComponent, {
-				tag: 'span', debug: 'count3' })
+			CountButtonComponent({ tag: 'span', debug: 'count3' })
 		]),
 		H.p(model.text)
 	]);
