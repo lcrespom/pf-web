@@ -9,11 +9,9 @@ export function update(model: CrudModel, action: CrudAction): CrudModel {
 			return newModel({ contacts: action.contacts });
 		case 'mode':
 			return newModel({ mode: action.mode });
-		case 'update-contact':
-			return newModel({ contact: action.contact });
 		case 'submit-contact':
 			return newModel({
-				contacts: R.append(model.contact, model.contacts),
+				contacts: R.append(action.contact, model.contacts),
 				contact: emptyContact(),
 				mode: 'table'
 			});

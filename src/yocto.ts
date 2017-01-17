@@ -10,6 +10,7 @@ export type ModelInit<M> = (props?: any) => M;
 export type Updater<M, A> = (model: M, action: A, onEvent?: ParentDispatch) => M;
 export type Renderer<M, A> = (model: M, dispatch: Dispatcher<M, A>) => any;
 export type ParentDispatch = (evt: any) => any;
+export type ComponentFactory = (compInit?: ComponentInit) => any;
 
 export interface Component<M, A> {
 	init: ModelInit<M>;
@@ -59,8 +60,8 @@ function vdomComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit = {})
 	});
 }
 
-export function makeComponent<M, A>(component: Component<M, A>) {
-	return function useComponent<M, A>(compInit: ComponentInit) {
+export function makeComponent<M, A>(component: Component<M, A>): ComponentFactory {
+	return function useComponent<M, A>(compInit?: ComponentInit) {
 		return vdomComponent(component, compInit);
 	};
 }

@@ -1,11 +1,11 @@
 import H from '../tag-helpers';
 import { Contact, CrudModel, CrudDispatcher } from './types';
+import { FormComponent, FormDescriptor } from './form-cmp';
 declare const R;
 
 
 const CONTACT_FIELDS = ['name', 'surname', 'company', 'mobile', 'phone', 'email'];
 const CONTACT_LABELS = ['Name', 'Surname', 'Company', 'Mobile', 'Phone', 'e-mail'];
-const CONTACT_FIELDS_LABELS = R.zip(CONTACT_FIELDS, CONTACT_LABELS);
 
 
 function viewCrudTable(items: any[], fields: string[], labels: string[]) {
@@ -28,45 +28,27 @@ function viewContacts(model: CrudModel, dispatch: CrudDispatcher) {
 	]);
 }
 
-function viewFormInput(model: any, field: string, label: string, changed) {
-	return H.div('.form-group', [
-		H.label('.control-label.col-sm-3', label),
-		H.div('.col-sm-9',
-			H.input('.form-control', {
-				attrs: { value: model[field] },
-				on: { change: evt => changed(field, evt.target.value) }
-			})
-		)
-	]);
-}
-
-function viewFormButtons(buttons: any[]) {
-	return H.div('.form-group',
-		H.div('.col-sm-12.text-center',
-			R.intersperse('\u00A0\u00A0\u00A0', buttons))
-	);
-}
-
 function viewContactForm(model: Contact, dispatch: CrudDispatcher) {
-	const updateContact = (field, value) => dispatch({
-		type: 'update-contact',
-		contact: R.merge(model, { [field]: value })
-	});
+	let props: FormDescriptor = {
+		fields: CONTACT_FIELDS,
+		labels: CONTACT_LABELS
+	};
+	const handleFormEvent = evt => {
+		switch (evt.type) {
+			case 'submit':
+				return dispatch({
+					type: 'submit-contact',
+					contact: evt.formData
+				});
+			case 'cancel':
+				return dispatch({ type: 'mode', mode: 'table' });
+		}
+	};
 	return H.div([
-		H.form('.form-horizontal', {
-			attrs: { action: 'javascript:void(0)' },
-			on: { submit: _ => dispatch({ type: 'submit-contact' }) } }, [
-			H.div(CONTACT_FIELDS_LABELS.map(([field, label]) =>
-				viewFormInput(model, field, label, updateContact))),
-			viewFormButtons([
-				H.button('.btn.btn-primary',
-					{ attrs: { type: 'submit' } },
-					'Save contact'),
-				H.button('.btn.btn-default', {
-					on: { click: _ => dispatch({ type: 'mode', mode: 'table' })}
-				}, 'Cancel')
-			])
-		])
+		FormComponent({
+			props,
+			onEvent: handleFormEvent
+		})
 	]);
 }
 
