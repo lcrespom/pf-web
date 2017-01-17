@@ -38,30 +38,23 @@ export function runComponent<M, A>(component: Component<M, A>,
 		vnode = render(vnode, view(model, dispatch));
 	};
 	vnode = render(vnode, view(model, dispatch));
-	if (debug) prepareDebug(debug, model, dispatch);
+	if (debug)
+		prepareDebug(debug, model, dispatch);
 	return dispatch;
 }
 
 
 // -------------------- Nested component support --------------------
 
-function plugComponent<M, A>(component: Component<M, A>,
-	elm: HTMLElement, data: any, parentDispatch: ParentDispatch, debug: string) {
-	let child = document.createElement('div');
-	elm.appendChild(child);
-	runComponent(component, child, { data, parentDispatch, debug });
-}
-
 export function hComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit = {}) {
-	let {
-		tag = 'div',
-		data = {},
-		parentDispatch = () => {},
-		debug = ''
-	} = compInit;
+	let { tag = 'div' } = compInit;
 	return h(tag, {
 		hook: {
-			create: (e, vnode) => plugComponent(cmp, vnode.elm, data, parentDispatch, debug)
+			create: (e, vnode) => {
+				let child = document.createElement('div');
+				vnode.elm.appendChild(child);
+				runComponent(cmp, child, compInit);
+			}
 		}
 	});
 }
