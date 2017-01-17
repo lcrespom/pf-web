@@ -12,11 +12,13 @@ interface Component<M, A> {
 }
 
 function plugComponent<M, A>(cmp: Component<M, A>, elm: HTMLElement) {
-	runComponent(cmp.update, cmp.view, cmp.init(), elm);
+	let child = document.createElement('div');
+	elm.appendChild(child);
+	runComponent(cmp.update, cmp.view, cmp.init(), child);
 }
 
-function hComponent<M, A>(cmp: Component<M, A>) {
-	return h('div', {
+function hComponent<M, A>(cmp: Component<M, A>, containerTag: string = 'div') {
+	return h(containerTag, {
 		hook: {
 			create: (e, vnode) => plugComponent(cmp, vnode.elm)
 		}
@@ -60,19 +62,41 @@ type FractalAction = { text: string };
 export type FractalDispatcher = Dispatcher<FractalModel, FractalAction>;
 
 function view(model: FractalModel, dispatch: FractalDispatcher) {
-	return H.div();
+	return H.div([
+		H.h1('Fractal'),
+		H.input({
+			on: { change: evt => dispatch({ text: evt.target.value }) },
+		}),
+		H.div([
+			hComponent(countCmp, 'span'),
+			' ',
+			hComponent(countCmp, 'span'),
+			' ',
+			hComponent(countCmp, 'span'),
+		]),
+		H.p(model.text)
+	]);
 }
 
 function update(model: FractalModel, action: FractalAction): FractalModel {
 	return { text: action.text };
 }
 
-
-// ToDo render count component inside fractal view etc
 document.addEventListener('DOMContentLoaded', _ => {
 	let container = document.getElementById('fractal-app');
 	if (!container)
-		throw Error('No element found');
-	plugComponent(countCmp, container);
+		throw Error('No element');
+	let model: FractalModel = { text: '' };
+	runComponent(update, view, model, container, true);
 });
+
+
+
+// ToDo render count component inside fractal view etc
+// document.addEventListener('DOMContentLoaded', _ => {
+// 	let container = document.getElementById('fractal-app');
+// 	if (!container)
+// 		throw Error('No element found');
+// 	plugComponent(countCmp, container);
+// });
 

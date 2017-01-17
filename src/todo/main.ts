@@ -9,5 +9,5 @@ document.addEventListener('DOMContentLoaded', _ => {
 	if (!container)
 		throw Error('No "#todo-app" element');
 	let model: ToDoModel = { input: '', items: [], filter: 'All' };
-	runComponent(update, view, model, container, true);
+	runComponent(update, view, model, container);
 });
