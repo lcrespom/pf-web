@@ -1,6 +1,6 @@
 import H from '../tag-helpers';
 import { Contact, CrudModel, CrudDispatcher } from './types';
-import { FormComponent, FormDescriptor } from './form-cmp';
+import { FormComponent, FormModel } from './form-cmp';
 declare const R;
 
 
@@ -29,9 +29,10 @@ function viewContacts(model: CrudModel, dispatch: CrudDispatcher) {
 }
 
 function viewContactForm(model: Contact, dispatch: CrudDispatcher) {
-	let props: FormDescriptor = {
+	let props: FormModel = {
 		fields: CONTACT_FIELDS,
-		labels: CONTACT_LABELS
+		labels: CONTACT_LABELS,
+		formData: {}
 	};
 	const handleFormEvent = evt => {
 		switch (evt.type) {

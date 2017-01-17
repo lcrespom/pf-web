@@ -11,16 +11,12 @@ export interface FormRule {
 	autofocus?: boolean;
 }
 
-export interface FormDescriptor {
+export interface FormModel {
 	fields: string[];
 	labels: string[];
+	formData: any;
 	fieldLabels?: string[][];
 	rules?: { [field: string]: FormRule };
-}
-
-interface FormModel {
-	formData: any;
-	props: FormDescriptor;
 }
 
 type FormAction = UpdateFieldAction | SubmitAction | CancelAction;
@@ -49,7 +45,7 @@ function viewFormInput(model: any, field: string, label: string, changed) {
 		H.label('.control-label.col-sm-3', label),
 		H.div('.col-sm-9',
 			H.input('.form-control', {
-				attrs: { value: model[field] },
+				attrs: { value: model[field] || '' },
 				on: { change: evt => changed(field, evt.target.value) }
 			})
 		)
@@ -64,7 +60,7 @@ function viewFormButtons(buttons: any[]) {
 }
 
 function view(model: FormModel, dispatch: FormDispatcher) {
-	if (!model.props.fieldLabels) return;
+	if (!model.fieldLabels) return;
 	const updateField = (field, value) => dispatch({
 		type: 'update-field', field, value
 	});
@@ -72,8 +68,8 @@ function view(model: FormModel, dispatch: FormDispatcher) {
 		H.form('.form-horizontal', {
 			attrs: { action: 'javascript:void(0)' },
 			on: { submit: _ => dispatch({ type: 'submit' }) } }, [
-			H.div(model.props.fieldLabels.map(([field, label]) =>
-				viewFormInput(model, field, label, updateField))),
+			H.div(model.fieldLabels.map(([field, label]) =>
+				viewFormInput(model.formData, field, label, updateField))),
 			viewFormButtons([
 				H.button('.btn.btn-primary',
 					{ attrs: { type: 'submit' } },
@@ -113,10 +109,7 @@ function update(model: FormModel, action: FormAction,
 function init(props?: any): FormModel {
 	props.fieldLabels = R.zip(props.fields, props.labels);
 	props.rules = {};
-	return {
-		formData: {},
-		props
-	};
+	return props;
 }
 
 
