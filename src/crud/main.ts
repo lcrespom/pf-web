@@ -17,7 +17,12 @@ document.addEventListener('DOMContentLoaded', _ => {
 	let container = document.getElementById('crud-app');
 	if (!container)
 		throw Error('No "#crud-app" element');
-	let dispatch = runComponent(update, view, initModel(), container);
+	let crudComponent = {
+		view,
+		update,
+		init: initModel
+	};
+	let dispatch = runComponent(crudComponent, container);
 	fetchContacts()
 	.then(contacts => dispatch({ type: 'contacts', contacts }));
 });

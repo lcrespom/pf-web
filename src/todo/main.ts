@@ -4,10 +4,22 @@ import { view } from './view';
 import { ToDoModel } from './types';
 
 
+function initModel(): ToDoModel {
+	return {
+		input: '',
+		items: [],
+		filter: 'All'
+	};
+}
+
 document.addEventListener('DOMContentLoaded', _ => {
 	let container = document.getElementById('todo-app');
 	if (!container)
 		throw Error('No "#todo-app" element');
-	let model: ToDoModel = { input: '', items: [], filter: 'All' };
-	runComponent(update, view, model, container);
+	let todoComponent = {
+		view,
+		update,
+		init: initModel
+	};
+	runComponent(todoComponent, container);
 });

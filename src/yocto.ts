@@ -6,10 +6,17 @@ export type Dispatcher<M, A> = (action: A, newModel?: M) => void;
 export type Updater<M, A> = (model: M, action: A) => M;
 export type Renderer<M, A> = (model: M, dispatch: Dispatcher<M, A>) => any;
 
-export function runComponent<M, A>(
-	update: Updater<M, A>, view: Renderer<M, A>,
-	model: M, domNode: HTMLElement, debugMode: boolean = false): Dispatcher<M, A> {
+export interface Component<M, A> {
+	init: (data?: any) => M;
+	view: (model: M, dispatch: Dispatcher<M, A>) => any;
+	update: (model: M, action: A) => M;
+}
+
+export function runComponent<M, A>(component: Component<M, A>,
+	domNode: HTMLElement, onAction?: ParentDispatch, debugMode?: boolean): Dispatcher<M, A> {
 	let vnode = domNode;
+	let model = component.init();
+	let { update, view } = component;
 	let dispatch = (action: A, newModel?: M) => {
 		model = newModel || update(model, action);
 		if (debugMode && !newModel)
@@ -24,32 +31,32 @@ export function runComponent<M, A>(
 
 // -------------------- Component support --------------------
 
-export interface Component<M, A> {
-	init: (data: any) => M;
-	view: (model: M, dispatch: Dispatcher<M, A>) => any;
-	update: (model: M, action: A) => M;
-}
-
 export type ParentDispatch = (evt: any) => any;
 
 export interface ComponentInit {
 	tag?: string;
 	data?: any;
 	onAction?: ParentDispatch;
+	debug?: boolean;
 }
 
-function plugComponent<M, A>(cmp: Component<M, A>,
-	elm: HTMLElement, data: any, onAction: ParentDispatch) {
+function plugComponent<M, A>(component: Component<M, A>,
+	elm: HTMLElement, data: any, onAction: ParentDispatch, debug: boolean) {
 	let child = document.createElement('div');
 	elm.appendChild(child);
-	runComponent(cmp.update, cmp.view, cmp.init(data), child);
+	runComponent(component, child, onAction, debug);
 }
 
 export function hComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit = {}) {
-	let { tag = 'div', data = {}, onAction = () => {} } = compInit;
+	let {
+		tag = 'div',
+		data = {},
+		onAction = () => {},
+		debug = false
+	} = compInit;
 	return h(tag, {
 		hook: {
-			create: (e, vnode) => plugComponent(cmp, vnode.elm, data, onAction)
+			create: (e, vnode) => plugComponent(cmp, vnode.elm, data, onAction, debug)
 		}
 	});
 }

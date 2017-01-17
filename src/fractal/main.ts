@@ -60,10 +60,14 @@ function update(model: FractalModel, action: FractalAction): FractalModel {
 	return { text: action.text };
 }
 
+function initModel(): FractalModel {
+	return { text: '' };
+}
+
 document.addEventListener('DOMContentLoaded', _ => {
 	let container = document.getElementById('fractal-app');
 	if (!container)
 		throw Error('No element');
-	let model: FractalModel = { text: '' };
-	runComponent(update, view, model, container, true);
+	let fractalComponent = { view, update, init: initModel };
+	runComponent(fractalComponent, container);
 });
