@@ -1,5 +1,5 @@
 import { ToDoModel, ToDoAction } from './types';
-declare var R;
+declare const R;
 
 
 export function update(model: ToDoModel, action: ToDoAction): ToDoModel {

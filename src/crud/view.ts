@@ -1,6 +1,6 @@
 import H from '../tag-helpers';
 import { Contact, CrudModel, CrudDispatcher } from './types';
-declare var R;
+declare const R;
 
 
 const CONTACT_FIELDS = ['name', 'surname', 'company', 'mobile', 'phone', 'email'];

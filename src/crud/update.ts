@@ -1,5 +1,5 @@
 import { CrudModel, CrudAction, emptyContact } from './types';
-declare var R;
+declare const R;
 
 
 export function update(model: CrudModel, action: CrudAction): CrudModel {

@@ -1,11 +1,13 @@
-import { runComponent, Dispatcher, hComponent } from '../yocto';
+import { runComponent, Dispatcher, ParentDispatch, hComponent } from '../yocto';
 import H from '../tag-helpers';
+declare const R;
 
 
 // -------------------- Count button component --------------------
 
 interface CountButtonModel {
 	count: number;
+	eventEvery: number;
 }
 
 type CountAction = { inc: number };
@@ -18,12 +20,16 @@ function countButtonView(model: CountButtonModel, dispatch: CountDispatcher) {
 	}, '' + model.count);
 }
 
-function countButtonUpdate(model: CountButtonModel, action: CountAction): CountButtonModel {
-	return { count: model.count + action.inc };
+function countButtonUpdate(model: CountButtonModel, action: CountAction,
+	parentDispatch?: ParentDispatch): CountButtonModel {
+	let newCount = model.count + action.inc;
+	if (parentDispatch && newCount % model.eventEvery == 0)
+		parentDispatch(newCount);
+	return R.merge(model, { count: newCount });
 }
 
 let countCmp = {
-	init: () => ({ count: 0 }),
+	init: () => ({ count: 0, eventEvery: 5 }),
 	view: countButtonView,
 	update: countButtonUpdate
 };
@@ -46,7 +52,9 @@ function view(model: FractalModel, dispatch: FractalDispatcher) {
 		}),
 		H.br(), H.br(),
 		H.div([
-			hComponent(countCmp, { tag: 'span'}),
+			hComponent(countCmp, {
+				tag: 'span',
+				parentDispatch: num => dispatch({ text: '' + num })}),
 			' ',
 			hComponent(countCmp, { tag: 'span'}),
 			' ',

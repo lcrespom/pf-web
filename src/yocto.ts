@@ -2,23 +2,29 @@ import vdom from 'snabbdom/snabbdom.bundle';
 const { patch: render, h } = vdom;
 let global = window as any;
 
+
+// -------------------- Application entry point --------------------
+
 export type Dispatcher<M, A> = (action: A, newModel?: M) => void;
-export type Updater<M, A> = (model: M, action: A) => M;
+export type ModelInit<M> = (data?: any) => M;
+export type Updater<M, A> = (model: M, action: A, parentDispatch?: ParentDispatch) => M;
 export type Renderer<M, A> = (model: M, dispatch: Dispatcher<M, A>) => any;
 
 export interface Component<M, A> {
-	init: (data?: any) => M;
-	view: (model: M, dispatch: Dispatcher<M, A>) => any;
-	update: (model: M, action: A) => M;
+	init: ModelInit<M>;
+	view: Renderer<M, A>;
+	update: Updater<M, A>;
 }
 
+export type ParentDispatch = (evt: any) => any;
+
 export function runComponent<M, A>(component: Component<M, A>,
-	domNode: HTMLElement, onAction?: ParentDispatch, debugMode?: boolean): Dispatcher<M, A> {
+	domNode: HTMLElement, parentDispatch?: ParentDispatch, debugMode?: boolean): Dispatcher<M, A> {
 	let vnode = domNode;
 	let model = component.init();
 	let { update, view } = component;
 	let dispatch = (action: A, newModel?: M) => {
-		model = newModel || update(model, action);
+		model = newModel || update(model, action, parentDispatch);
 		if (debugMode && !newModel)
 			global.yocto.push(model);
 		vnode = render(vnode, view(model, dispatch));
@@ -29,34 +35,32 @@ export function runComponent<M, A>(component: Component<M, A>,
 }
 
 
-// -------------------- Component support --------------------
-
-export type ParentDispatch = (evt: any) => any;
+// -------------------- Nested component support --------------------
 
 export interface ComponentInit {
 	tag?: string;
 	data?: any;
-	onAction?: ParentDispatch;
+	parentDispatch?: ParentDispatch;
 	debug?: boolean;
 }
 
 function plugComponent<M, A>(component: Component<M, A>,
-	elm: HTMLElement, data: any, onAction: ParentDispatch, debug: boolean) {
+	elm: HTMLElement, data: any, parentDispatch: ParentDispatch, debug: boolean) {
 	let child = document.createElement('div');
 	elm.appendChild(child);
-	runComponent(component, child, onAction, debug);
+	runComponent(component, child, parentDispatch, debug);
 }
 
 export function hComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit = {}) {
 	let {
 		tag = 'div',
 		data = {},
-		onAction = () => {},
+		parentDispatch = () => {},
 		debug = false
 	} = compInit;
 	return h(tag, {
 		hook: {
-			create: (e, vnode) => plugComponent(cmp, vnode.elm, data, onAction, debug)
+			create: (e, vnode) => plugComponent(cmp, vnode.elm, data, parentDispatch, debug)
 		}
 	});
 }
