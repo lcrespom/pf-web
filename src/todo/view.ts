@@ -5,7 +5,7 @@ import { ToDoItem, ToDoModel, ToDoDispatcher } from './types';
 function viewAddToDo(model: ToDoModel, dispatch: ToDoDispatcher) {
 	return H.div([
 		H.input({
-			on: { input: evt => dispatch({ type: 'input', text: evt.target.value }) },
+			on: { change: evt => dispatch({ type: 'input', text: evt.target.value }) },
 			props: { value: model.input },
 			attrs: { autofocus: true }
 		}),
