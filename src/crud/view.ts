@@ -30,9 +30,13 @@ function viewContacts(model: CrudModel, dispatch: CrudDispatcher) {
 
 function viewContactForm(model: Contact, dispatch: CrudDispatcher) {
 	let props: FormModel = {
+		formData: {},
 		fields: CONTACT_FIELDS,
 		labels: CONTACT_LABELS,
-		formData: {}
+		rules: {
+			email: { type: 'email' },
+			name: { autofocus: true, required: true }
+		}
 	};
 	const handleFormEvent = evt => {
 		switch (evt.type) {

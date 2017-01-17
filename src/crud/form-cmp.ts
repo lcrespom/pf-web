@@ -40,12 +40,21 @@ type FormDispatcher = Dispatcher<FormModel, FormAction>;
 
 // -------------------- View --------------------
 
-function viewFormInput(model: any, field: string, label: string, changed) {
+function viewFormInput(model: any,
+	field: string, label: string, rule: FormRule = {}, changed) {
+	let {
+		type = 'text',
+		required = false,
+		autofocus = false
+	} = rule;
 	return H.div('.form-group', [
 		H.label('.control-label.col-sm-3', label),
 		H.div('.col-sm-9',
 			H.input('.form-control', {
-				attrs: { value: model[field] || '' },
+				attrs: {
+					value: model[field] || '',
+					type, required
+				},
 				on: { change: evt => changed(field, evt.target.value) }
 			})
 		)
@@ -61,6 +70,7 @@ function viewFormButtons(buttons: any[]) {
 
 function view(model: FormModel, dispatch: FormDispatcher) {
 	if (!model.fieldLabels) return;
+	let rules = model.rules || {};
 	const updateField = (field, value) => dispatch({
 		type: 'update-field', field, value
 	});
@@ -69,7 +79,8 @@ function view(model: FormModel, dispatch: FormDispatcher) {
 			attrs: { action: 'javascript:void(0)' },
 			on: { submit: _ => dispatch({ type: 'submit' }) } }, [
 			H.div(model.fieldLabels.map(([field, label]) =>
-				viewFormInput(model.formData, field, label, updateField))),
+				viewFormInput(model.formData, field, label,
+					rules[field], updateField))),
 			viewFormButtons([
 				H.button('.btn.btn-primary',
 					{ attrs: { type: 'submit' } },
@@ -108,7 +119,7 @@ function update(model: FormModel, action: FormAction,
 
 function init(props?: any): FormModel {
 	props.fieldLabels = R.zip(props.fields, props.labels);
-	props.rules = {};
+	props.rules = props.rules || {};
 	return props;
 }
 

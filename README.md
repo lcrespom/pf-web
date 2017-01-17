@@ -21,8 +21,12 @@ The fact that such a powerful framework can be based on such few lines of code r
 	- Ask in SO => wait for answer
 	- Open issue in @types/ramda => wait for answer
 - Expand the CRUD demo:
-	- Add components for inputs, form, validators, etc.
-	- Other input widgets, e.g. radios, checkboxes, etc.
+	- Components
+		- Form
+			- Support autofocus
+			- Custom validation
+		- Other input widgets, e.g. radios, checkboxes, etc.
+		- Componentize CRUD table
 	- Contact edit / delete buttons in table
 	- Expand REST-dummy service
 	- Loading progress indicator component
