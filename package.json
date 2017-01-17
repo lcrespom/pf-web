@@ -7,7 +7,8 @@
     "start": "npm run serve",
     "build:todo": "browserify -d src/todo/main.ts -p [ tsify ] | exorcist web/todo.js.map > web/todo.js",
     "build:crud": "browserify -d src/crud/main.ts -p [ tsify ] | exorcist web/crud.js.map > web/crud.js",
-    "build": "npm run build:todo && npm run build:crud",
+    "build:fractal": "browserify -d src/fractal/main.ts -p [ tsify ] | exorcist web/fractal.js.map > web/fractal.js",
+    "build": "npm run build:todo && npm run build:crud && npm run build:fractal",
     "watch": "chokidar \"src/**/*.ts\" -c \"npm run build && echo ----- Build done -----\"",
     "serve": "cd web && live-server"
   },
