@@ -9,33 +9,13 @@ export type Dispatcher<M, A> = (action: A, newModel?: M) => void;
 export type ModelInit<M> = (data?: any) => M;
 export type Updater<M, A> = (model: M, action: A, parentDispatch?: ParentDispatch) => M;
 export type Renderer<M, A> = (model: M, dispatch: Dispatcher<M, A>) => any;
+export type ParentDispatch = (evt: any) => any;
 
 export interface Component<M, A> {
 	init: ModelInit<M>;
 	view: Renderer<M, A>;
 	update: Updater<M, A>;
 }
-
-export type ParentDispatch = (evt: any) => any;
-
-export function runComponent<M, A>(component: Component<M, A>,
-	domNode: HTMLElement, parentDispatch?: ParentDispatch, debugMode?: boolean): Dispatcher<M, A> {
-	let vnode = domNode;
-	let model = component.init();
-	let { update, view } = component;
-	let dispatch = (action: A, newModel?: M) => {
-		model = newModel || update(model, action, parentDispatch);
-		if (debugMode && !newModel)
-			global.yocto.push(model);
-		vnode = render(vnode, view(model, dispatch));
-	};
-	vnode = render(vnode, view(model, dispatch));
-	if (debugMode) prepareDebug(model, dispatch);
-	return dispatch;
-}
-
-
-// -------------------- Nested component support --------------------
 
 export interface ComponentInit {
 	tag?: string;
@@ -44,11 +24,32 @@ export interface ComponentInit {
 	debug?: boolean;
 }
 
+
+export function runComponent<M, A>(component: Component<M, A>,
+	domNode: HTMLElement, compInit: ComponentInit = {}): Dispatcher<M, A> {
+	let vnode = domNode;
+	let { update, view } = component;
+	let  { parentDispatch = () => {}, debug = false, data = {} } = compInit;
+	let model = component.init(data);
+	let dispatch = (action: A, newModel?: M) => {
+		model = newModel || update(model, action, parentDispatch);
+		if (debug && !newModel)
+			global.yocto.push(model);
+		vnode = render(vnode, view(model, dispatch));
+	};
+	vnode = render(vnode, view(model, dispatch));
+	if (debug) prepareDebug(model, dispatch);
+	return dispatch;
+}
+
+
+// -------------------- Nested component support --------------------
+
 function plugComponent<M, A>(component: Component<M, A>,
 	elm: HTMLElement, data: any, parentDispatch: ParentDispatch, debug: boolean) {
 	let child = document.createElement('div');
 	elm.appendChild(child);
-	runComponent(component, child, parentDispatch, debug);
+	runComponent(component, child, { data, parentDispatch, debug });
 }
 
 export function hComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit = {}) {

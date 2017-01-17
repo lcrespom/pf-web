@@ -1,38 +1,7 @@
-import { runComponent, Dispatcher, ParentDispatch, hComponent } from '../yocto';
+import { runComponent, Dispatcher, hComponent } from '../yocto';
 import H from '../tag-helpers';
-declare const R;
+import { CountButtonComponent } from './count-button';
 
-
-// -------------------- Count button component --------------------
-
-interface CountButtonModel {
-	count: number;
-	eventEvery: number;
-}
-
-type CountAction = { inc: number };
-
-export type CountDispatcher = Dispatcher<CountButtonModel, CountAction>;
-
-function countButtonView(model: CountButtonModel, dispatch: CountDispatcher) {
-	return H.button({
-		on: { click: _ => dispatch({ inc: +1 }) }
-	}, '' + model.count);
-}
-
-function countButtonUpdate(model: CountButtonModel, action: CountAction,
-	parentDispatch?: ParentDispatch): CountButtonModel {
-	let newCount = model.count + action.inc;
-	if (parentDispatch && newCount % model.eventEvery == 0)
-		parentDispatch(newCount);
-	return R.merge(model, { count: newCount });
-}
-
-let countCmp = {
-	init: () => ({ count: 0, eventEvery: 5 }),
-	view: countButtonView,
-	update: countButtonUpdate
-};
 
 // -------------------- Main app --------------------
 
@@ -45,6 +14,7 @@ type FractalAction = { text: string };
 export type FractalDispatcher = Dispatcher<FractalModel, FractalAction>;
 
 function view(model: FractalModel, dispatch: FractalDispatcher) {
+	const parentDispatch = num => dispatch({ text: '' + num });
 	return H.div([
 		H.h1('Fractal'),
 		H.input({
@@ -52,13 +22,13 @@ function view(model: FractalModel, dispatch: FractalDispatcher) {
 		}),
 		H.br(), H.br(),
 		H.div([
-			hComponent(countCmp, {
-				tag: 'span',
-				parentDispatch: num => dispatch({ text: '' + num })}),
+			hComponent(CountButtonComponent, {
+				tag: 'span', parentDispatch }),
 			' ',
-			hComponent(countCmp, { tag: 'span'}),
+			hComponent(CountButtonComponent, {
+				tag: 'span', data: { eventEvery: 2 }, parentDispatch }),
 			' ',
-			hComponent(countCmp, { tag: 'span'})
+			hComponent(CountButtonComponent, { tag: 'span'})
 		]),
 		H.p(model.text)
 	]);
