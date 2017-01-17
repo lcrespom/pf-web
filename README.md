@@ -8,7 +8,7 @@ It is also _fractal_, i.e. it supports components that handle their own internal
 
 ## Yocto
 Demo applications rely on a minimal framework called **Yocto**, providing:
-- The main functional update / render loop (~16 SLOC)
+- The main functional update/render loop (~16 SLOC)
 - A way to create components that use the same pattern as the main application (~17 SLOC)
 - A time-travel debugger, accessible via the console (~26 SLOC)
 
