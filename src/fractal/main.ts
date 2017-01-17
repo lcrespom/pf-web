@@ -28,7 +28,8 @@ function view(model: FractalModel, dispatch: FractalDispatcher) {
 			hComponent(CountButtonComponent, {
 				tag: 'span', data: { eventEvery: 2 }, parentDispatch }),
 			' ',
-			hComponent(CountButtonComponent, { tag: 'span'})
+			hComponent(CountButtonComponent, {
+				tag: 'span', debug: 'count3' })
 		]),
 		H.p(model.text)
 	]);

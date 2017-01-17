@@ -21,7 +21,7 @@ export interface ComponentInit {
 	tag?: string;
 	data?: any;
 	parentDispatch?: ParentDispatch;
-	debug?: boolean;
+	debug?: string;
 }
 
 
@@ -29,16 +29,16 @@ export function runComponent<M, A>(component: Component<M, A>,
 	domNode: HTMLElement, compInit: ComponentInit = {}): Dispatcher<M, A> {
 	let vnode = domNode;
 	let { update, view } = component;
-	let  { parentDispatch = () => {}, debug = false, data = {} } = compInit;
+	let  { parentDispatch = () => {}, debug = null, data = {} } = compInit;
 	let model = component.init(data);
 	let dispatch = (action: A, newModel?: M) => {
 		model = newModel || update(model, action, parentDispatch);
 		if (debug && !newModel)
-			global.yocto.push(model);
+			global.yocto.debug[debug].push(model);
 		vnode = render(vnode, view(model, dispatch));
 	};
 	vnode = render(vnode, view(model, dispatch));
-	if (debug) prepareDebug(model, dispatch);
+	if (debug) prepareDebug(debug, model, dispatch);
 	return dispatch;
 }
 
@@ -46,7 +46,7 @@ export function runComponent<M, A>(component: Component<M, A>,
 // -------------------- Nested component support --------------------
 
 function plugComponent<M, A>(component: Component<M, A>,
-	elm: HTMLElement, data: any, parentDispatch: ParentDispatch, debug: boolean) {
+	elm: HTMLElement, data: any, parentDispatch: ParentDispatch, debug: string) {
 	let child = document.createElement('div');
 	elm.appendChild(child);
 	runComponent(component, child, { data, parentDispatch, debug });
@@ -57,7 +57,7 @@ export function hComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit =
 		tag = 'div',
 		data = {},
 		parentDispatch = () => {},
-		debug = false
+		debug = ''
 	} = compInit;
 	return h(tag, {
 		hook: {
@@ -69,9 +69,10 @@ export function hComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit =
 
 // -------------------- Debug support  --------------------
 
-function prepareDebug<M, A>(initialModel: M, dispatch: Dispatcher<M, A>) {
-	global.yocto = new YoctoDebugger<M, A>(dispatch);
-	global.yocto.push(initialModel);
+function prepareDebug<M, A>(key: string, initialModel: M, dispatch: Dispatcher<M, A>) {
+	global.yocto = global.yocto || { debug: {} };
+	global.yocto.debug[key] = new YoctoDebugger<M, A>(dispatch);
+	global.yocto.debug[key].push(initialModel);
 }
 
 class YoctoDebugger<M, A> {

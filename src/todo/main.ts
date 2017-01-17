@@ -21,5 +21,5 @@ document.addEventListener('DOMContentLoaded', _ => {
 		update,
 		init: initModel
 	};
-	runComponent(todoComponent, container);
+	runComponent(todoComponent, container, { debug: 'todo' });
 });
