@@ -8,23 +8,28 @@ const CONTACT_FIELDS = ['name', 'surname', 'company', 'mobile', 'phone', 'email'
 const CONTACT_LABELS = ['Name', 'Surname', 'Company', 'Mobile', 'Phone', 'e-mail'];
 
 
-function actionButton(btnStyle: string, icon: string, text: string) {
-	return H.a(`.btn.btn-${btnStyle}.btn-sm`, [
-		H.span(`.glyphicon.glyphicon-${icon}`,
-			{ attrs: { 'aria-hidden': true } }),
-		' ' + text
-	]);
+function actionButton(btnStyle: string, icon: string, text: string,
+	item, clicked: (item) => any) {
+	return H.a(`.btn.btn-${btnStyle}.btn-sm`,
+		{ on: { click: _ => clicked(item) } },
+		[
+			H.span(`.glyphicon.glyphicon-${icon}`,
+				{ attrs: { 'aria-hidden': true } }),
+			' ' + text
+		]
+	);
 }
 
-function actionButtons() {
+function actionButtons(item, editClicked: (item) => any, removeClicked: (item) => any) {
 	return H.td('.text-center.nowrap', [
-		actionButton('warning', 'pencil', 'Edit'),
+		actionButton('warning', 'pencil', 'Edit', item, editClicked),
 		' ',
-		actionButton('danger', 'trash', 'Remove')
+		actionButton('danger', 'trash', 'Remove', item, removeClicked)
 	]);
 }
 
-function viewCrudTable(items: any[], fields: string[], labels: string[]) {
+function viewCrudTable(items: any[], fields: string[], labels: string[],
+	editClicked: (item) => any, removeClicked: (item) => any) {
 	return H.table('.table.table-hover', [
 		H.thead(
 			H.tr(
@@ -34,7 +39,7 @@ function viewCrudTable(items: any[], fields: string[], labels: string[]) {
 		),
 		H.tbody(items.map(item =>
 			H.tr(
-				[actionButtons()]
+				[actionButtons(item, editClicked, removeClicked)]
 				.concat(fields.map(field => H.td(item[field])))
 			)
 		))
@@ -46,7 +51,9 @@ function viewContacts(model: CrudModel, dispatch: CrudDispatcher) {
 		H.button('.btn.btn-primary', {
 			on: { click: _ => dispatch({ type: 'mode', mode: 'new' })}
 		}, 'New contact'),
-		viewCrudTable(model.contacts, CONTACT_FIELDS, CONTACT_LABELS)
+		viewCrudTable(model.contacts, CONTACT_FIELDS, CONTACT_LABELS,
+			item => alert('ToDo: edit ' + item.name),
+			item => alert('ToDo: remove ' + item.name))
 	]);
 }
 
