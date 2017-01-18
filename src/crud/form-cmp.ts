@@ -5,18 +5,12 @@ declare const R;
 
 // -------------------- Types --------------------
 
-export interface FormRule {
-	type?: string;
-	required?: boolean;
-	autofocus?: boolean;
-}
-
 export interface FormModel {
 	fields: string[];
 	labels: string[];
 	formData: any;
 	fieldLabels?: string[][];
-	rules?: { [field: string]: FormRule };
+	attrs?: { [field: string]: any };
 }
 
 type FormAction = UpdateFieldAction | SubmitAction | CancelAction;
@@ -41,20 +35,18 @@ type FormDispatcher = Dispatcher<FormModel, FormAction>;
 // -------------------- View --------------------
 
 function viewFormInput(model: any,
-	field: string, label: string, rule: FormRule = {}, changed) {
-	let {
-		type = 'text',
-		required = false,
-		autofocus = false
-	} = rule;
+	field: string, label: string, attrs: any = {}, changed) {
+	attrs.value = model[field] || '';
+	const autoFocusHook = (autoFocus: boolean) =>
+		autoFocus
+			? { insert: vnode => vnode.elm.focus() }
+			: {};
 	return H.div('.form-group', [
 		H.label('.control-label.col-sm-3', label),
 		H.div('.col-sm-9',
 			H.input('.form-control', {
-				attrs: {
-					value: model[field] || '',
-					type, required
-				},
+				attrs,
+				hook: autoFocusHook(attrs.autofocus),
 				on: { change: evt => changed(field, evt.target.value) }
 			})
 		)
@@ -70,7 +62,7 @@ function viewFormButtons(buttons: any[]) {
 
 function view(model: FormModel, dispatch: FormDispatcher) {
 	if (!model.fieldLabels) return;
-	let rules = model.rules || {};
+	let attrs = model.attrs || {};
 	const updateField = (field, value) => dispatch({
 		type: 'update-field', field, value
 	});
@@ -80,7 +72,7 @@ function view(model: FormModel, dispatch: FormDispatcher) {
 			on: { submit: _ => dispatch({ type: 'submit' }) } }, [
 			H.div(model.fieldLabels.map(([field, label]) =>
 				viewFormInput(model.formData, field, label,
-					rules[field], updateField))),
+					attrs[field], updateField))),
 			viewFormButtons([
 				H.button('.btn.btn-primary',
 					{ attrs: { type: 'submit' } },
@@ -117,9 +109,11 @@ function update(model: FormModel, action: FormAction,
 }
 
 
-function init(props?: any): FormModel {
+function init(props?: FormModel): FormModel {
+	if (!props)
+		throw Error('props parameter is mandatory for FormComponent');
 	props.fieldLabels = R.zip(props.fields, props.labels);
-	props.rules = props.rules || {};
+	props.attrs = props.attrs || {};
 	return props;
 }
 

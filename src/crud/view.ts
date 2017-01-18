@@ -33,7 +33,7 @@ function viewContactForm(model: Contact, dispatch: CrudDispatcher) {
 		formData: {},
 		fields: CONTACT_FIELDS,
 		labels: CONTACT_LABELS,
-		rules: {
+		attrs: {
 			email: { type: 'email' },
 			name: { autofocus: true, required: true }
 		}

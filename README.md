@@ -23,7 +23,6 @@ The fact that such a powerful framework can be based on such few lines of code r
 - Expand the CRUD demo:
 	- Components
 		- Form
-			- Support autofocus
 			- Custom validation
 		- Other input widgets, e.g. radios, checkboxes, etc.
 		- Componentize CRUD table

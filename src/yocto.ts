@@ -51,7 +51,7 @@ function vdomComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit = {})
 	let { tag = 'div' } = compInit;
 	return h(tag, {
 		hook: {
-			create: (e, vnode) => {
+			insert: vnode => {
 				let child = document.createElement('div');
 				vnode.elm.appendChild(child);
 				runComponent(cmp, child, compInit);
