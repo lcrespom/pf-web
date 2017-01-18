@@ -1,20 +1,29 @@
 import { Dispatcher } from '../yocto';
 
 
-export type CrudAction = SetContactsAction | SetModeAction | SubmitContactAction;
+export type CrudAction = SetContactsAction | NewContactAction |
+	SubmitContactAction | EditContactAction | CancelContactAction;
 
 interface SetContactsAction {
 	type: 'contacts';
 	contacts: Contact[];
 }
 
-interface SetModeAction {
-	type: 'mode';
-	mode: 'new' | 'table';
-}
-
 interface SubmitContactAction {
 	type: 'submit-contact';
+	contact: Contact;
+}
+
+interface NewContactAction {
+	type: 'new-contact';
+}
+
+interface CancelContactAction {
+	type: 'cancel-contact';
+}
+
+interface EditContactAction {
+	type: 'edit-contact';
 	contact: Contact;
 }
 
@@ -31,7 +40,7 @@ export interface Contact {
 export interface CrudModel {
 	contacts: Contact[];
 	contact: Contact;
-	mode: string;
+	mode: 'new' | 'edit' | 'table';
 }
 
 export type CrudDispatcher = Dispatcher<CrudModel, CrudAction>;
