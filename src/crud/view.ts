@@ -17,7 +17,8 @@ function viewContacts(model: CrudModel, dispatch: CrudDispatcher) {
 	};
 	let buttons = [
 		crudEditButton(item => dispatch({ type: 'edit-contact', contact: item })),
-		crudRemoveButton(item => alert('ToDo: remove ' + item.name))
+		crudRemoveButton(item => confirm(`Remove ${item.name} ${item.surname}?`)
+			? dispatch({ type: 'remove-contact', contact: item }) : void(0))
 	];
 	return H.div([
 		H.button('.btn.btn-primary', {
