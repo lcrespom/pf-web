@@ -27,11 +27,12 @@ The fact that such a powerful framework can be based on such few lines of code r
 		- Form
 			- Custom validation
 		- Other input widgets, e.g. radios, checkboxes, etc.
-	- Contact edit / delete buttons in table
-		- Edit/add/remove contact actions should invoke REST service
-	- Expand REST-dummy service
-	- Loading progress indicator component
-	- Popup component
-	- Search filter
+		- Menu component
 	- Route support
 	- Test CSS animations
+	- Expand REST-dummy service
+		- Edit/add/remove contact actions should invoke REST service
+		- Loading progress indicator component
+	- Popup component
+		- Use for contact delete confirmation
+	- Search filter
