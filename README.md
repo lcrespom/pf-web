@@ -32,3 +32,4 @@ The fact that such a powerful framework can be based on such few lines of code r
 	- Popup component
 	- Search filter
 	- Route support
+	- Test CSS animations
