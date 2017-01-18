@@ -11,6 +11,8 @@ export interface FormModel {
 	formData: any;
 	fieldLabels?: string[][];
 	attrs?: { [field: string]: any };
+	submitLabel?: string;
+	cancelLabel?: string;
 }
 
 type FormAction = UpdateFieldAction | SubmitAction | CancelAction;
@@ -74,13 +76,13 @@ function view(model: FormModel, dispatch: FormDispatcher) {
 				viewFormInput(model.formData, field, label,
 					attrs[field], updateField))),
 			viewFormButtons([
-				H.button('.btn.btn-primary',
-					{ attrs: { type: 'submit' } },
-					'Save'),
+				H.button('.btn.btn-primary', {
+					attrs: { type: 'submit' } },
+					model.submitLabel || 'Save'),
 				H.button('.btn.btn-default', {
 					attrs: { type: 'button' },
-					on: { click: _ => dispatch({ type: 'cancel' })}
-				}, 'Cancel')
+					on: { click: _ => dispatch({ type: 'cancel' })} },
+					model.cancelLabel || 'Cancel')
 			])
 		])
 	]);
@@ -113,7 +115,6 @@ function init(props?: FormModel): FormModel {
 	if (!props)
 		throw Error('props parameter is mandatory for FormComponent');
 	props.fieldLabels = R.zip(props.fields, props.labels);
-	props.attrs = props.attrs || {};
 	return props;
 }
 

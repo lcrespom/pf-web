@@ -36,7 +36,8 @@ function viewContactForm(model: Contact, dispatch: CrudDispatcher) {
 		attrs: {
 			email: { type: 'email' },
 			name: { autofocus: true, required: true }
-		}
+		},
+		submitLabel: 'Save contact'
 	};
 	const handleFormEvent = evt => {
 		switch (evt.type) {
