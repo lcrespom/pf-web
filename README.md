@@ -20,6 +20,8 @@ The fact that such a powerful framework can be based on such few lines of code r
 - How to import ramda type definitions without bundling it?
 	- Ask in SO => wait for answer
 	- Open issue in @types/ramda => wait for answer
+- Infrastructure
+	- Migrate to WebPack
 - Expand the CRUD demo:
 	- Components
 		- Form
