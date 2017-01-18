@@ -1,8 +1,22 @@
 import H from '../tag-helpers';
 
 
+export interface TableData {
+	items: any[];
+	fields: string[];
+	labels: string[];
+}
+
+type ItemAction = (item: any) => any;
+
+export interface ActionHandlers {
+	onEdit: ItemAction;
+	onRemove: ItemAction;
+}
+
+
 function actionButton(btnStyle: string, icon: string, text: string,
-	item, clicked: (item) => any) {
+	item: any, clicked: ItemAction) {
 	return H.a(`.btn.btn-${btnStyle}.btn-sm`,
 		{ on: { click: _ => clicked(item) } },
 		[
@@ -13,27 +27,26 @@ function actionButton(btnStyle: string, icon: string, text: string,
 	);
 }
 
-function actionButtons(item, editClicked: (item) => any, removeClicked: (item) => any) {
+function actionButtons(item: any, handlers: ActionHandlers) {
 	return H.td('.text-center.nowrap', [
-		actionButton('warning', 'pencil', 'Edit', item, editClicked),
+		actionButton('warning', 'pencil', 'Edit', item, handlers.onEdit),
 		' ',
-		actionButton('danger', 'trash', 'Remove', item, removeClicked)
+		actionButton('danger', 'trash', 'Remove', item, handlers.onRemove)
 	]);
 }
 
-export function viewCrudTable(items: any[], fields: string[], labels: string[],
-	editClicked: (item) => any, removeClicked: (item) => any) {
+export function viewCrudTable(tableData: TableData, handlers: ActionHandlers) {
 	return H.table('.table.table-hover', [
 		H.thead(
 			H.tr(
 				[H.th('.text-center.action-col', 'Action')]
-				.concat(labels.map(label => H.th(label)))
+				.concat(tableData.labels.map(label => H.th(label)))
 			)
 		),
-		H.tbody(items.map(item =>
+		H.tbody(tableData.items.map(item =>
 			H.tr(
-				[actionButtons(item, editClicked, removeClicked)]
-				.concat(fields.map(field => H.td(item[field])))
+				[actionButtons(item, handlers)]
+				.concat(tableData.fields.map(field => H.td(item[field])))
 			)
 		))
 	]);

@@ -10,13 +10,20 @@ const CONTACT_LABELS = ['Name', 'Surname', 'Company', 'Mobile', 'Phone', 'e-mail
 
 
 function viewContacts(model: CrudModel, dispatch: CrudDispatcher) {
+	let tableData = {
+		items: model.contacts,
+		fields: CONTACT_FIELDS,
+		labels: CONTACT_LABELS
+	};
+	let handlers = {
+		onEdit: item => dispatch({ type: 'edit-contact', contact: item }),
+		onRemove: item => alert('ToDo: remove ' + item.name)
+	};
 	return H.div([
 		H.button('.btn.btn-primary', {
 			on: { click: _ => dispatch({ type: 'new-contact' })}
 		}, 'New contact'),
-		viewCrudTable(model.contacts, CONTACT_FIELDS, CONTACT_LABELS,
-			item => dispatch({ type: 'edit-contact', contact: item }),
-			item => alert('ToDo: remove ' + item.name))
+		viewCrudTable(tableData, handlers)
 	]);
 }
 

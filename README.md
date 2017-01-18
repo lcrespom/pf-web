@@ -25,8 +25,6 @@ The fact that such a powerful framework can be based on such few lines of code r
 		- Form
 			- Custom validation
 		- Other input widgets, e.g. radios, checkboxes, etc.
-		- Componentize CRUD table
-			- Simplify parameters into objects
 	- Contact edit / delete buttons in table
 		- Delete contact
 		- Submit contact action should invoke REST service
