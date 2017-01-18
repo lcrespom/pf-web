@@ -4,6 +4,8 @@ declare const R;
 
 export function update(model: CrudModel, action: CrudAction): CrudModel {
 	let newModel = R.merge(model);
+	let replaceInList = (list, oldElem, newElem) =>
+		list.map(item => item === oldElem ? newElem : item);
 	switch (action.type) {
 		case 'contacts':
 			return newModel({ contacts: action.contacts });
@@ -13,10 +15,12 @@ export function update(model: CrudModel, action: CrudAction): CrudModel {
 				contact: emptyContact()
 			});
 		case 'submit-contact':
+			let newContacts = model.mode == 'new'
+				? R.append(action.contact, model.contacts)
+				: replaceInList(model.contacts, model.contact, action.contact);
 			return newModel({
 				mode: 'table',
-				// ToDo: append if mode == 'new', replace if mode == 'edit'
-				contacts: R.append(action.contact, model.contacts),
+				contacts: newContacts,
 				contact: emptyContact()
 			});
 		case 'cancel-contact':
