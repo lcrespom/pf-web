@@ -1,7 +1,7 @@
 import H from '../tag-helpers';
 import { Contact, CrudModel, CrudDispatcher } from './types';
 import { FormComponent, FormModel } from './form-cmp';
-import { viewCrudTable } from './crud-table-view';
+import { viewCrudTable, crudEditButton, crudRemoveButton } from './crud-table-view';
 declare const R;
 
 
@@ -15,15 +15,15 @@ function viewContacts(model: CrudModel, dispatch: CrudDispatcher) {
 		fields: CONTACT_FIELDS,
 		labels: CONTACT_LABELS
 	};
-	let handlers = {
-		onEdit: item => dispatch({ type: 'edit-contact', contact: item }),
-		onRemove: item => alert('ToDo: remove ' + item.name)
-	};
+	let buttons = [
+		crudEditButton(item => dispatch({ type: 'edit-contact', contact: item })),
+		crudRemoveButton(item => alert('ToDo: remove ' + item.name))
+	];
 	return H.div([
 		H.button('.btn.btn-primary', {
 			on: { click: _ => dispatch({ type: 'new-contact' })}
 		}, 'New contact'),
-		viewCrudTable(tableData, handlers)
+		viewCrudTable(tableData, buttons)
 	]);
 }
 

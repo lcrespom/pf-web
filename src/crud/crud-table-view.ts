@@ -1,4 +1,5 @@
 import H from '../tag-helpers';
+declare const R;
 
 
 export interface TableData {
@@ -9,43 +10,60 @@ export interface TableData {
 
 type ItemAction = (item: any) => any;
 
-export interface ActionHandlers {
-	onEdit: ItemAction;
-	onRemove: ItemAction;
+export interface ButtonData {
+	style: string;
+	icon: string;
+	text: string;
+	onClick: ItemAction;
 }
 
 
-function actionButton(btnStyle: string, icon: string, text: string,
-	item: any, clicked: ItemAction) {
-	return H.a(`.btn.btn-${btnStyle}.btn-sm`,
-		{ on: { click: _ => clicked(item) } },
+export function crudEditButton(onClick: ItemAction): ButtonData {
+	return {
+		style: 'warning', icon: 'pencil', text: 'Edit',
+		onClick
+	};
+}
+
+export function crudRemoveButton(onClick: ItemAction): ButtonData {
+	return {
+		style: 'danger', icon: 'trash', text: 'Remove',
+		onClick
+	};
+}
+
+function actionButton(item: any, btnData: ButtonData) {
+	let btnText = btnData.text ? ' ' + btnData.text : '';
+	return H.a(`.btn.btn-${btnData.style}.btn-sm`,
+		{ on: { click: _ => btnData.onClick(item) } },
 		[
-			H.span(`.glyphicon.glyphicon-${icon}`,
+			H.span(`.glyphicon.glyphicon-${btnData.icon}`,
 				{ attrs: { 'aria-hidden': true } }),
-			' ' + text
+			btnText
 		]
 	);
 }
 
-function actionButtons(item: any, handlers: ActionHandlers) {
-	return H.td('.text-center.nowrap', [
-		actionButton('warning', 'pencil', 'Edit', item, handlers.onEdit),
-		' ',
-		actionButton('danger', 'trash', 'Remove', item, handlers.onRemove)
-	]);
+function actionButtons(item: any, buttons: ButtonData[]) {
+	if (buttons.length == 0) return [];
+	let butDom = buttons.map(butData => actionButton(item, butData));
+	return [H.td('.text-center.nowrap', R.intersperse(' ', butDom))];
 }
 
-export function viewCrudTable(tableData: TableData, handlers: ActionHandlers) {
+export function viewCrudTable(tableData: TableData, buttons: ButtonData[]) {
+	let actionHeader = buttons.length > 0
+		? [H.th('.text-center.action-col', 'Action')]
+		: [];
 	return H.table('.table.table-hover', [
 		H.thead(
 			H.tr(
-				[H.th('.text-center.action-col', 'Action')]
+				actionHeader
 				.concat(tableData.labels.map(label => H.th(label)))
 			)
 		),
 		H.tbody(tableData.items.map(item =>
 			H.tr(
-				[actionButtons(item, handlers)]
+				actionButtons(item, buttons)
 				.concat(tableData.fields.map(field => H.td(item[field])))
 			)
 		))
