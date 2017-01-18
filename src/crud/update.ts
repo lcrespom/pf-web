@@ -23,6 +23,10 @@ export function update(model: CrudModel, action: CrudAction): CrudModel {
 				contacts: newContacts,
 				contact: emptyContact()
 			});
+		case 'remove-contact':
+			return newModel({
+				contacts: model.contacts.filter(contact => contact != action.contact)
+			});
 		case 'cancel-contact':
 			return newModel({ mode: 'table' });
 		case 'edit-contact':

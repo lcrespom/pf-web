@@ -2,7 +2,7 @@ import { Dispatcher } from '../yocto';
 
 
 export type CrudAction = SetContactsAction | NewContactAction |
-	SubmitContactAction | EditContactAction | CancelContactAction;
+	SubmitContactAction | EditContactAction | CancelContactAction | RemoveContactAction;
 
 interface SetContactsAction {
 	type: 'contacts';
@@ -24,6 +24,11 @@ interface CancelContactAction {
 
 interface EditContactAction {
 	type: 'edit-contact';
+	contact: Contact;
+}
+
+interface RemoveContactAction {
+	type: 'remove-contact';
 	contact: Contact;
 }
 
