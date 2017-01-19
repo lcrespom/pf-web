@@ -1,5 +1,5 @@
 import { CrudModel, CrudAction, emptyContact } from './types';
-declare const R;
+import * as R from 'ramda';
 
 
 export function update(model: CrudModel, action: CrudAction): CrudModel {

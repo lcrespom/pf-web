@@ -17,12 +17,6 @@ Demo applications rely on a minimal framework called **Yocto**, providing:
 The fact that such a powerful framework can be based on such few lines of code reveal the deep strength of this architectural style in particular, and of the pure functional approach in general.
 
 ## ToDo
-- How to import ramda type definitions without bundling it?
-	- Ask in SO => wait for answer
-	- Open issue in @types/ramda => wait for answer
-- Improve imports
-	- Remove `declare class Promise`, add ES6 library in tsconfig.json
-	- Replace `declare const R` with `import { whatever } from 'ramda'`, and get proper type checking
 - Expand the CRUD demo:
 	- Components
 		- Form
@@ -30,6 +24,7 @@ The fact that such a powerful framework can be based on such few lines of code r
 		- Other input widgets, e.g. radios, checkboxes, etc.
 		- Menu component
 	- Route support
+		- Use [Routie](http://projects.jga.me/routie/)
 	- Test CSS animations
 	- Expand REST-dummy service
 		- Edit/add/remove contact actions should invoke REST service

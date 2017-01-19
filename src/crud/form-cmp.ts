@@ -1,6 +1,6 @@
 import { Dispatcher, ParentDispatch, makeComponent } from '../yocto';
 import H from '../tag-helpers';
-declare const R;
+import * as R from 'ramda';
 
 
 // -------------------- Types --------------------

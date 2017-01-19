@@ -2,7 +2,6 @@ import H from '../tag-helpers';
 import { Contact, CrudModel, CrudDispatcher } from './types';
 import { FormComponent, FormModel } from './form-cmp';
 import { viewCrudTable, crudEditButton, crudRemoveButton } from './crud-table-view';
-declare const R;
 
 
 const CONTACT_FIELDS = ['name', 'surname', 'company', 'mobile', 'phone', 'email'];

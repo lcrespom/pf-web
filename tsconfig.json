@@ -5,6 +5,7 @@
 		"sourceMap": true,
 		"outDir": "js",
 		"types": [],
+		"lib": ["dom", "es6", "dom.iterable"],
 		"strictNullChecks": true,
 		"moduleResolution": "node"
 	},

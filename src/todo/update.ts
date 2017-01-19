@@ -1,5 +1,5 @@
 import { ToDoModel, ToDoAction } from './types';
-declare const R;
+import * as R from 'ramda';
 
 
 export function update(model: ToDoModel, action: ToDoAction): ToDoModel {
