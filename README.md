@@ -20,8 +20,9 @@ The fact that such a powerful framework can be based on such few lines of code r
 - How to import ramda type definitions without bundling it?
 	- Ask in SO => wait for answer
 	- Open issue in @types/ramda => wait for answer
-- Infrastructure
-	- Migrate to WebPack
+- Improve imports
+	- Remove `declare class Promise`, add ES6 library in tsconfig.json
+	- Replace `declare const R` with `import { whatever } from 'ramda'`, and get proper type checking
 - Expand the CRUD demo:
 	- Components
 		- Form
