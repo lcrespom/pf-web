@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Experimenting with a simple pure functional + virtual DOM web app",
   "scripts": {
-    "build": "webpack --env.target=PROD",
-    "dev": "webpack-dev-server --env.target=DEV --content-base web/"
+    "build": "webpack -p",
+    "dev": "webpack-dev-server --content-base web/"
   },
   "repository": {
     "type": "git",
