@@ -1,5 +1,9 @@
 import { Contact } from './types';
 
+declare class Promise<T> {
+	constructor(cb: (resolve, reject) => any);
+	then(cb: any);
+};
 
 export function fetchContacts(): Promise<Contact[]> {
 	return new Promise((resolve, reject) => {

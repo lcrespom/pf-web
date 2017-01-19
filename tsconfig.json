@@ -1,11 +1,12 @@
 {
 	"compilerOptions": {
-		"target": "ES6",
-		"module": "commonjs",
+		"target": "ES5",
+		"module": "es6",
 		"sourceMap": true,
 		"outDir": "js",
 		"types": [],
-		"strictNullChecks": true
+		"strictNullChecks": true,
+		"moduleResolution": "node"
 	},
 	"include": [
 		"src/**/*"
