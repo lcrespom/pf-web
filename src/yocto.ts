@@ -1,5 +1,7 @@
 import vdom from 'snabbdom/snabbdom.bundle';
 const { patch: render, h } = vdom;
+import { VNode } from 'snabbdom/src/vnode';
+export { VNode } from 'snabbdom/src/vnode';
 let global = window as any;
 
 
@@ -8,9 +10,9 @@ let global = window as any;
 export type Dispatcher<M, A> = (action: A, newModel?: M) => void;
 export type ModelInit<M> = (props?: any) => M;
 export type Updater<M, A> = (model: M, action: A, onEvent?: ParentDispatch) => M;
-export type Renderer<M, A> = (model: M, dispatch: Dispatcher<M, A>) => any;
+export type Renderer<M, A> = (model: M, dispatch: Dispatcher<M, A>) => VNode;
 export type ParentDispatch = (evt: any) => any;
-export type ComponentFactory = (compInit?: ComponentInit) => any;
+export type ComponentFactory = (compInit?: ComponentInit) => VNode;
 
 export interface Component<M, A> {
 	init: ModelInit<M>;
@@ -47,7 +49,7 @@ export function runComponent<M, A>(component: Component<M, A>,
 
 // -------------------- Nested component support --------------------
 
-function vdomComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit = {}) {
+function vdomComponent<M, A>(cmp: Component<M, A>, compInit: ComponentInit = {}): VNode {
 	let { tag = 'div' } = compInit;
 	return h(tag, {
 		hook: {

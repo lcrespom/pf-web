@@ -1,4 +1,5 @@
 import H from '../tag-helpers';
+import { VNode } from '../yocto';
 import { Contact, CrudModel, CrudDispatcher } from './types';
 import { FormComponent, FormModel } from './form-cmp';
 import { viewCrudTable, crudEditButton, crudRemoveButton } from './crud-table-view';
@@ -8,7 +9,7 @@ const CONTACT_FIELDS = ['name', 'surname', 'company', 'mobile', 'phone', 'email'
 const CONTACT_LABELS = ['Name', 'Surname', 'Company', 'Mobile', 'Phone', 'e-mail'];
 
 
-function viewContacts(model: CrudModel, dispatch: CrudDispatcher) {
+function viewContacts(model: CrudModel, dispatch: CrudDispatcher): VNode {
 	let tableData = {
 		items: model.contacts,
 		fields: CONTACT_FIELDS,
@@ -27,7 +28,7 @@ function viewContacts(model: CrudModel, dispatch: CrudDispatcher) {
 	]);
 }
 
-function viewContactForm(model: Contact, dispatch: CrudDispatcher) {
+function viewContactForm(model: Contact, dispatch: CrudDispatcher): VNode {
 	let props: FormModel = {
 		formData: model,
 		fields: CONTACT_FIELDS,
@@ -57,7 +58,7 @@ function viewContactForm(model: Contact, dispatch: CrudDispatcher) {
 	]);
 }
 
-export function view(model: CrudModel, dispatch: CrudDispatcher) {
+export function view(model: CrudModel, dispatch: CrudDispatcher): VNode {
 	return H.div([
 		H.h1('CRUD'),
 		model.mode == 'table' ?

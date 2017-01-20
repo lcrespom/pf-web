@@ -1,4 +1,4 @@
-import { VNode } from 'snabbdom/src/vnode';
+import { VNode } from '../yocto';
 import H from '../tag-helpers';
 import * as R from 'ramda';
 

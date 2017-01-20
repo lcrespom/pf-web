@@ -1,4 +1,4 @@
-import { Dispatcher, ParentDispatch, makeComponent } from '../yocto';
+import { Dispatcher, ParentDispatch, makeComponent, VNode } from '../yocto';
 import H from '../tag-helpers';
 import * as R from 'ramda';
 
@@ -62,8 +62,8 @@ function viewFormButtons(buttons: any[]) {
 	);
 }
 
-function view(model: FormModel, dispatch: FormDispatcher) {
-	if (!model.fieldLabels) return;
+function view(model: FormModel, dispatch: FormDispatcher): VNode {
+	if (!model.fieldLabels) return H.div();
 	let attrs = model.attrs || {};
 	const updateField = (field, value) => dispatch({
 		type: 'update-field', field, value
