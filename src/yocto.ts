@@ -31,16 +31,15 @@ export interface ComponentInit {
 export function runComponent<M, A>(component: Component<M, A>,
 	domNode: HTMLElement, compInit: ComponentInit = {}): Dispatcher<M, A> {
 	let vnode = domNode;
-	let { update, view } = component;
 	let  { onEvent = () => {}, debug = null, props = {} } = compInit;
 	let model = component.init(props);
 	let dispatch = (action: A, newModel?: M) => {
-		model = newModel || update(model, action, onEvent);
+		model = newModel || component.update(model, action, onEvent);
 		if (debug && !newModel)
 			global.yocto.debug[debug].push(model);
-		vnode = render(vnode, view(model, dispatch));
+		vnode = render(vnode, component.view(model, dispatch));
 	};
-	vnode = render(vnode, view(model, dispatch));
+	vnode = render(vnode, component.view(model, dispatch));
 	if (debug)
 		prepareDebug(debug, model, dispatch);
 	return dispatch;
