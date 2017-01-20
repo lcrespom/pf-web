@@ -1,3 +1,4 @@
+import { VNode } from 'snabbdom/src/vnode';
 import H from '../tag-helpers';
 import * as R from 'ramda';
 
@@ -32,7 +33,7 @@ export function crudRemoveButton(onClick: ItemAction): ButtonData {
 	};
 }
 
-function actionButton(item: any, btnData: ButtonData) {
+function actionButton(item: any, btnData: ButtonData): VNode {
 	let btnText = btnData.text ? ' ' + btnData.text : '';
 	return H.a(`.btn.btn-${btnData.style}.btn-sm`,
 		{ on: { click: _ => btnData.onClick(item) } },
@@ -44,13 +45,13 @@ function actionButton(item: any, btnData: ButtonData) {
 	);
 }
 
-function actionButtons(item: any, buttons: ButtonData[]) {
+function actionButtons(item: any, buttons: ButtonData[]): VNode[] {
 	if (buttons.length == 0) return [];
 	let butDom = buttons.map(butData => actionButton(item, butData));
-	return [H.td('.text-center.nowrap', R.intersperse(' ', butDom))];
+	return [H.td('.text-center.nowrap', R.intersperse(' ' as any, butDom))];
 }
 
-export function viewCrudTable(tableData: TableData, buttons: ButtonData[]) {
+export function viewCrudTable(tableData: TableData, buttons: ButtonData[]): VNode {
 	let actionHeader = buttons.length > 0
 		? [H.th('.text-center.action-col', 'Action')]
 		: [];
