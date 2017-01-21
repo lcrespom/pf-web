@@ -1,6 +1,5 @@
 node_modules/
 js/
-web/vendor/
 web/*.js*
 npm-debug.log*
 .DS_Store

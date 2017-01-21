@@ -5,7 +5,8 @@ module.exports = {
 	entry: {
 		todo: ['./src/todo/main.ts'],
 		crud: ['./src/crud/main.ts'],
-		fractal: ['./src/fractal/main.ts']
+		fractal: ['./src/fractal/main.ts'],
+		router: ['./src/router/main.ts']
 	},
 	resolve: {
 		extensions: ['.webpack.js', '.ts', '.js']
