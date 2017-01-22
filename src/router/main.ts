@@ -38,10 +38,10 @@ function view(model: RtrTstModel, dispatch: RtrTstDispatcher): VNode {
 		H.a('.btn.btn-default', href('#route1'), 'Route 1'),
 		'\u00A0\u00A0',
 		H.a('.btn.btn-default', href('#route2'), 'Route 2'),
-		RouterComponent({ props: {
-			routes: ['route1', 'route2'],
-			onRoute: action => dispatch(action)
-		}}),
+		RouterComponent({
+			props: ['route1', 'route2'],
+			onEvent: action => dispatch(action)
+		}),
 		H.div(model.view(model, dispatch))
 	]);
 }

@@ -1,4 +1,4 @@
-import { makeComponent, Dispatcher, VNode } from '../yocto';
+import { makeComponent, Dispatcher, ParentDispatch, VNode } from '../yocto';
 import H from '../tag-helpers';
 declare const routie;
 
@@ -9,13 +9,8 @@ export interface RouterAction {
 	args: any[];
 }
 
-export interface RouteConfig {
-	routes: string[];
-	onRoute: (action: RouterAction) => any;
-}
-
 interface RouterModel {
-	config: RouteConfig;
+	routes: string[];
 	routesReady: boolean;
 }
 
@@ -23,10 +18,10 @@ type RouterDispatcher = Dispatcher<RouterModel, RouterAction>;
 
 
 function setupRoutes(model: RouterModel, dispatch: RouterDispatcher) {
-	model.config.routes.forEach(route =>
+	model.routes.forEach(route =>
 		routie(route, (...args) =>
 			setTimeout(_ =>
-				model.config.onRoute({ type: 'route', route, args }),
+				dispatch({ type: 'route', route, args }),
 			0)
 		)
 	);
@@ -39,13 +34,14 @@ function rView(model: RouterModel, dispatch: RouterDispatcher): VNode {
 	return H.span();
 }
 
-function rUpdate(model: RouterModel, action: RouterAction): RouterModel {
+function rUpdate(model: RouterModel, action: RouterAction, onEvent: ParentDispatch): RouterModel {
+	onEvent(action);
 	return model;
 }
 
-function rInit(config: RouteConfig): RouterModel {
+function rInit(routes: string[]): RouterModel {
 	return {
-		config,
+		routes,
 		routesReady: false,
 	};
 }
