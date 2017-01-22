@@ -23,8 +23,6 @@ The fact that such a powerful framework can be based on such few lines of code r
 			- Custom validation
 		- Other input widgets, e.g. radios, checkboxes, etc.
 		- Menu component
-	- Route support
-		- Use [Routie](http://projects.jga.me/routie/)
 	- Test CSS animations
 	- Expand REST-dummy service
 		- Edit/add/remove contact actions should invoke REST service

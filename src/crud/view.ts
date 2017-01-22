@@ -1,8 +1,8 @@
 import H from '../tag-helpers';
 import { VNode } from '../yocto';
 import { Contact, CrudModel, CrudDispatcher } from './types';
-import { FormComponent, FormModel } from './form-cmp';
-import { viewCrudTable, crudEditButton, crudRemoveButton } from './crud-table-view';
+import { FormComponent, FormModel } from '../utils/form-cmp';
+import { viewCrudTable, crudEditButton, crudRemoveButton } from '../utils/crud-table-view';
 
 
 const CONTACT_FIELDS = ['name', 'surname', 'company', 'mobile', 'phone', 'email'];
