@@ -44,7 +44,9 @@ function setupRoutes(model: RouterModel, dispatch: RouterDispatcher) {
 function rView(model: RouterModel, dispatch: RouterDispatcher): VNode {
 	if (!model.routesReady)
 		setupRoutes(model, dispatch);
-	return model.view(model, dispatch);
+	//return model.view(model, dispatch);
+	let viewCB = model.routes['$view'];
+	return viewCB(model.view);
 }
 
 function rUpdate(model: RouterModel, action: RouterAction): RouterModel {
@@ -60,43 +62,56 @@ export const RouterComponent = makeComponent({
 
 // -------------------- Main app --------------------
 
-interface RtrTstModel {}
+interface RtrTstModel { name: string; }
 
-interface RtrTstAction {}
+interface RtrTstAction { type: 'name'; name: string; }
 
 export type RtrTstDispatcher = Dispatcher<RtrTstModel, RtrTstAction>;
 
 
 function view1(model: RtrTstModel, dispatch: RtrTstDispatcher): VNode {
-	return H.div('Hello from view 1');
+	return H.div('Hello from view 1, ' + model.name);
 }
 
 function view2(model: RtrTstModel, dispatch: RtrTstDispatcher): VNode {
-	return H.div('Hello from view 2');
+	return H.div('Hello from view 2, ' + model.name);
 }
 
 function view(model: RtrTstModel, dispatch: RtrTstDispatcher): VNode {
 	const href = url => ({ attrs: { href: url }});
 	return H.div([
 		H.h1('Router'),
+		'What is your name? ',
+		H.input({ on: {
+			input: evt => dispatch({ type: 'name', name: evt.target.value })
+		}}),
+		H.br(),
+		H.span('Hello ' + model.name),
+		H.br(),
 		H.a('.btn.btn-default', href('#route1'), 'Route 1'),
 		'\u00A0\u00A0',
 		H.a('.btn.btn-default', href('#route2'), 'Route 2'),
 		RouterComponent({ props: {
 			route1: view1,
-			route2: view2
+			route2: view2,
+			$view: v => v(model, dispatch)
 		}})
 	]);
 }
 
 function update(model: RtrTstModel, action: RtrTstAction): RtrTstModel {
-	return model;
+	switch (action.type) {
+		case 'name':
+			return { name: action.name };
+		default:
+			return model;
+	}
 }
 
 document.addEventListener('DOMContentLoaded', () => {
 	let container = document.getElementById('route-app');
 	if (!container)
 		throw Error('No element');
-	let rtrTst = { view, update, init: _ => _ };
+	let rtrTst = { view, update, init: _ => ({ name: '' }) };
 	runComponent(rtrTst, container);
 });
