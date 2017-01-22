@@ -4,7 +4,8 @@
   "description": "Experimenting with a simple pure functional + virtual DOM web app",
   "scripts": {
     "build": "webpack -p",
-    "dev": "webpack-dev-server --content-base web/"
+    "dev": "webpack-dev-server --content-base web/",
+    "lib": "webpack --config webpack.lib.config.js && webpack -p --config webpack.lib.config.js"
   },
   "repository": {
     "type": "git",

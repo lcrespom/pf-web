@@ -1,6 +1,5 @@
 import * as R from 'ramda';
-import { runComponent, Dispatcher, VNode } from '../../yocto';
-import H from '../../tag-helpers';
+import { H, runComponent, Dispatcher, VNode } from '../../yocto';
 import { RouterAction, RouterComponent } from '../../utils/router-cmp';
 
 

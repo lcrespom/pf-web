@@ -37,7 +37,7 @@ function createTagFunction(tagName: string): VNodeFactory {
 	};
 }
 
-const tagHelpers = {
+export const tagHelpers = {
 	a: createTagFunction('a'),
 	abbr: createTagFunction('abbr'),
 	address: createTagFunction('address'),
