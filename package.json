@@ -2,6 +2,7 @@
   "name": "pf-web",
   "version": "1.0.0",
   "description": "Experimenting with a simple pure functional + virtual DOM web app",
+  "main": "dist/yocto.js",
   "scripts": {
     "build": "webpack -p",
     "dev": "webpack-dev-server --content-base web/",
