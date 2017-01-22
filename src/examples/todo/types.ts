@@ -1,4 +1,4 @@
-import { Dispatcher } from '../yocto';
+import { Dispatcher } from '../../yocto';
 
 
 export type ToDoAction = InputAction | AddAction | ToggleAction | FilterAction;

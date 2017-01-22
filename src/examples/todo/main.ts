@@ -1,4 +1,4 @@
-import { runComponent } from '../yocto';
+import { runComponent } from '../../yocto';
 import { update } from './update';
 import { view } from './view';
 import { ToDoModel } from './types';

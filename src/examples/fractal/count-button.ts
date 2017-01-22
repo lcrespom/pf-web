@@ -1,5 +1,5 @@
-import { Dispatcher, ParentDispatch, makeComponent } from '../yocto';
-import H from '../tag-helpers';
+import { Dispatcher, ParentDispatch, makeComponent } from '../../yocto';
+import H from '../../tag-helpers';
 import * as R from 'ramda';
 
 

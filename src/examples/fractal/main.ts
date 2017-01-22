@@ -1,5 +1,5 @@
-import { runComponent, Dispatcher } from '../yocto';
-import H from '../tag-helpers';
+import { runComponent, Dispatcher } from '../../yocto';
+import H from '../../tag-helpers';
 import { CountButtonComponent } from './count-button';
 
 

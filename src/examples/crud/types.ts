@@ -1,4 +1,4 @@
-import { Dispatcher } from '../yocto';
+import { Dispatcher } from '../../yocto';
 
 
 export type CrudAction = SetContactsAction | NewContactAction |

@@ -1,4 +1,4 @@
-import { runComponent } from '../yocto';
+import { runComponent } from '../../yocto';
 import { CrudModel, emptyContact } from './types';
 import { view } from './view';
 import { update } from './update';

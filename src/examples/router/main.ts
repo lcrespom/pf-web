@@ -1,7 +1,7 @@
 import * as R from 'ramda';
-import { runComponent, Dispatcher, VNode } from '../yocto';
-import H from '../tag-helpers';
-import { RouterAction, RouterComponent } from '../utils/router-cmp';
+import { runComponent, Dispatcher, VNode } from '../../yocto';
+import H from '../../tag-helpers';
+import { RouterAction, RouterComponent } from '../../utils/router-cmp';
 
 
 interface RtrTstModel {

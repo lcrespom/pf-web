@@ -3,10 +3,10 @@ var path = require('path');
 module.exports = {
 	devtool: 'source-map',
 	entry: {
-		todo: ['./src/todo/main.ts'],
-		crud: ['./src/crud/main.ts'],
-		fractal: ['./src/fractal/main.ts'],
-		router: ['./src/router/main.ts']
+		todo: ['./src/examples/todo/main.ts'],
+		crud: ['./src/examples/crud/main.ts'],
+		fractal: ['./src/examples/fractal/main.ts'],
+		router: ['./src/examples/router/main.ts']
 	},
 	resolve: {
 		extensions: ['.webpack.js', '.ts', '.js']

@@ -1,4 +1,4 @@
-import H from '../tag-helpers';
+import H from '../../tag-helpers';
 import { ToDoItem, ToDoModel, ToDoDispatcher } from './types';
 
 
