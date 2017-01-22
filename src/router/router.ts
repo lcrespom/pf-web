@@ -23,7 +23,7 @@ type RouterDispatcher = Dispatcher<RouterModel, RouterAction>;
 
 
 function setupRoutes(model: RouterModel, dispatch: RouterDispatcher) {
-	(model.config.routes).forEach(route =>
+	model.config.routes.forEach(route =>
 		routie(route, (...args) =>
 			setTimeout(_ =>
 				model.config.onRoute({ type: 'route', route, args }),
@@ -36,7 +36,7 @@ function setupRoutes(model: RouterModel, dispatch: RouterDispatcher) {
 function rView(model: RouterModel, dispatch: RouterDispatcher): VNode {
 	if (!model.routesReady)
 		setupRoutes(model, dispatch);
-	return(H.span());
+	return H.span();
 }
 
 function rUpdate(model: RouterModel, action: RouterAction): RouterModel {
