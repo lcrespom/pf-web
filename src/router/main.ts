@@ -7,16 +7,17 @@ declare const routie;
 // -------------------- Router --------------------
 
 interface RouteConfig {
-	[route: string]: Function;
+	routes: string[];
+	onRoute: (action: RouterAction) => any;
 }
 
 interface RouterModel {
-	routes: RouteConfig;
+	config: RouteConfig;
 	routesReady: boolean;
-	view: Function;
 }
 
 interface RouterAction {
+	type: 'route';
 	route: string;
 	args: any[];
 }
@@ -24,18 +25,12 @@ interface RouterAction {
 export type RouterDispatcher = Dispatcher<RouterModel, RouterAction>;
 
 
-function rInit(routes: RouteConfig): RouterModel {
-	return {
-		routes,
-		routesReady: false,
-		view: _ => H.span()
-	};
-}
-
 function setupRoutes(model: RouterModel, dispatch: RouterDispatcher) {
-	Object.keys(model.routes).forEach(key =>
-		routie(key, (...args) =>
-			setTimeout(_ => dispatch({ route: key, args }), 0)
+	(model.config.routes).forEach(route =>
+		routie(route, (...args) =>
+			setTimeout(_ =>
+				model.config.onRoute({ type: 'route', route, args }),
+			0)
 		)
 	);
 	model.routesReady = true;
@@ -44,13 +39,18 @@ function setupRoutes(model: RouterModel, dispatch: RouterDispatcher) {
 function rView(model: RouterModel, dispatch: RouterDispatcher): VNode {
 	if (!model.routesReady)
 		setupRoutes(model, dispatch);
-	//return model.view(model, dispatch);
-	let viewCB = model.routes['$view'];
-	return viewCB(model.view);
+	return(H.span());
 }
 
 function rUpdate(model: RouterModel, action: RouterAction): RouterModel {
-	return R.merge(model, { view: model.routes[action.route] });
+	return model;
+}
+
+function rInit(config: RouteConfig): RouterModel {
+	return {
+		config,
+		routesReady: false,
+	};
 }
 
 export const RouterComponent = makeComponent({
@@ -62,9 +62,14 @@ export const RouterComponent = makeComponent({
 
 // -------------------- Main app --------------------
 
-interface RtrTstModel { name: string; }
+interface RtrTstModel {
+	name: string;
+	view: Function;
+}
 
-interface RtrTstAction { type: 'name'; name: string; }
+type RtrTstAction = NameAction | RouterAction;
+
+type NameAction = { type: 'name'; name: string; };
 
 export type RtrTstDispatcher = Dispatcher<RtrTstModel, RtrTstAction>;
 
@@ -92,26 +97,37 @@ function view(model: RtrTstModel, dispatch: RtrTstDispatcher): VNode {
 		'\u00A0\u00A0',
 		H.a('.btn.btn-default', href('#route2'), 'Route 2'),
 		RouterComponent({ props: {
-			route1: view1,
-			route2: view2,
-			$view: v => v(model, dispatch)
-		}})
+			routes: ['route1', 'route2'],
+			onRoute: action => dispatch(action)
+		}}),
+		H.div(model.view(model, dispatch))
 	]);
 }
 
 function update(model: RtrTstModel, action: RtrTstAction): RtrTstModel {
+	const newModel = R.merge(model);
 	switch (action.type) {
+		case 'route':
+			let newView = action.route == 'route1' ? view1 : view2;
+			return newModel({ view: newView });
 		case 'name':
-			return { name: action.name };
+			return newModel({ name: action.name });
 		default:
 			return model;
 	}
+}
+
+function init(): RtrTstModel {
+	return {
+		name: '',
+		view: (model, dispatch) => H.span()
+	};
 }
 
 document.addEventListener('DOMContentLoaded', () => {
 	let container = document.getElementById('route-app');
 	if (!container)
 		throw Error('No element');
-	let rtrTst = { view, update, init: _ => ({ name: '' }) };
+	let rtrTst = { view, update, init };
 	runComponent(rtrTst, container);
 });
