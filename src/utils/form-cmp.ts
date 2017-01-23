@@ -31,7 +31,7 @@ interface CancelAction {
 	type: 'cancel';
 }
 
-type FormDispatcher = Dispatcher<FormModel, FormAction>;
+type FormDispatcher = Dispatcher<FormAction>;
 
 
 // -------------------- View --------------------

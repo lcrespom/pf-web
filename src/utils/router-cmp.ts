@@ -14,7 +14,7 @@ interface RouterModel {
 	routesReady: boolean;
 }
 
-type RouterDispatcher = Dispatcher<RouterModel, RouterAction>;
+type RouterDispatcher = Dispatcher<RouterAction>;
 
 
 function setupRoutes(model: RouterModel, dispatch: RouterDispatcher) {

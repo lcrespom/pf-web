@@ -9,7 +9,7 @@ interface CountButtonModel {
 
 type CountAction = { inc: number };
 
-type CountDispatcher = Dispatcher<CountButtonModel, CountAction>;
+type CountDispatcher = Dispatcher<CountAction>;
 
 function view(model: CountButtonModel, dispatch: CountDispatcher) {
 	return H.button({

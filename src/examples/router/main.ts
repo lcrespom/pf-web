@@ -12,7 +12,7 @@ type RtrTstAction = NameAction | RouterAction;
 
 type NameAction = { type: 'name'; name: string; };
 
-export type RtrTstDispatcher = Dispatcher<RtrTstModel, RtrTstAction>;
+export type RtrTstDispatcher = Dispatcher<RtrTstAction>;
 
 
 function view1(model: RtrTstModel, dispatch: RtrTstDispatcher): VNode {

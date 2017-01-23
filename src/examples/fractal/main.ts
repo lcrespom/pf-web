@@ -10,7 +10,7 @@ interface FractalModel {
 
 type FractalAction = { text: string };
 
-export type FractalDispatcher = Dispatcher<FractalModel, FractalAction>;
+export type FractalDispatcher = Dispatcher<FractalAction>;
 
 function view(model: FractalModel, dispatch: FractalDispatcher) {
 	const onEvent = num => dispatch({ text: '' + num });

@@ -35,4 +35,4 @@ export interface ToDoModel {
 	filter: 'All' | 'Pending' | 'Done';
 }
 
-export type ToDoDispatcher = Dispatcher<ToDoModel, ToDoAction>;
+export type ToDoDispatcher = Dispatcher<ToDoAction>;

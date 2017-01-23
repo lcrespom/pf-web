@@ -48,7 +48,7 @@ export interface CrudModel {
 	mode: 'new' | 'edit' | 'table';
 }
 
-export type CrudDispatcher = Dispatcher<CrudModel, CrudAction>;
+export type CrudDispatcher = Dispatcher<CrudAction>;
 
 export function emptyContact(): Contact {
 	return {
