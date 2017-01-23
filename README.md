@@ -30,3 +30,6 @@ The fact that such a powerful framework can be based on such few lines of code r
 	- Popup component
 		- Use for contact delete confirmation
 	- Search filter
+- Test a pure-fractal approach where there is only one "runComponent" loop
+	and all nested components are just by delegation.
+	- Consider container pattern
